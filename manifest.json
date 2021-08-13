@@ -1,34 +1,32 @@
 {
-    "name": "Example app",
+    "name": "ArchiveBox",
     "id": "example",
     "packaging_format": 1,
     "description": {
-        "en": "Explain in *a few (10~15) words* the purpose of the app or what it actually does (it is meant to give a rough idea to users browsing a catalog of 100+ apps)",
-        "fr": "Expliquez en *quelques* (10~15) mots l'utilité de l'app ou ce qu'elle fait (l'objectif est de donner une idée grossière pour des utilisateurs qui naviguent dans un catalogue de 100+ apps)"
+        "en": "ArchiveBox is a powerful, self-hosted internet archiving solution to collect, save, and view sites you want to preserve offline.",
+        "fr": ""
     },
     "version": "1.0~ynh1",
-    "url": "https://example.com",
+    "url": "https://archivebox.io/",
     "upstream": {
-        "license": "free",
-        "website": "https://example.com",
-        "demo": "https://demo.example.com",
+        "license": "MIT",
+        "website": "https://archivebox.io/",
+        "demo": "https://archivebox.io/",
         "admindoc": "https://yunohost.org/packaging_apps",
         "userdoc": "https://yunohost.org/apps",
-        "code": "https://some.forge.com/example/example"
+        "code": "https://github.com/ArchiveBox/ArchiveBox"
     },
-    "license": "free",
+    "license": "MIT",
     "maintainer": {
-        "name": "John doe",
-        "email": "john.doe@example.com"
+        "name": "Max Fowler",
+        "email": "max@mfowler.info"
     },
     "requirements": {
         "yunohost": ">= 4.1.3"
     },
     "multi_instance": true,
     "services": [
-        "nginx",
-        "php7.3-fpm",
-        "mysql"
+        "nginx"
     ],
     "arguments": {
         "install" : [
