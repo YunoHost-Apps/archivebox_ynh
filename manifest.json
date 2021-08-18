@@ -36,12 +36,6 @@
                 "example": "example.com"
             },
             {
-                "name": "path",
-                "type": "path",
-                "example": "/example",
-                "default": "/example"
-            },
-            {
                 "name": "admin",
                 "type": "user",
                 "example": "johndoe"

@@ -25,7 +25,10 @@ ynh_abort_if_errors
 #=================================================
 
 domain=$YNH_APP_ARG_DOMAIN
-path_url=$YNH_APP_ARG_PATH
+#path_url=$YNH_APP_ARG_PATH
+# we can only add support for subpaths once this is resolved in archivebox
+# https://github.com/ArchiveBox/ArchiveBox/issues/724
+path_url="/"
 admin=$YNH_APP_ARG_ADMIN
 is_public=$YNH_APP_ARG_IS_PUBLIC
 language=$YNH_APP_ARG_LANGUAGE
@@ -251,7 +254,7 @@ ynh_script_progression --message="Adding a configuration file..." --time --weigh
 ###
 ### Check the documentation of `ynh_add_config` for more info.
 # TODO: add config
-#ynh_add_config --template="some_config_file" --destination="$final_path/some_config_file"
+ynh_add_config --template="ArchiveBox.conf" --destination="$final_path/ArchiveBox.conf"
 
 # FIXME: this should be handled by the core in the future
 # You may need to use chmod 600 instead of 400,
@@ -297,32 +300,8 @@ ynh_use_logrotate
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --time --weight=1
 
-### `yunohost service add` integrates a service in YunoHost. It then gets
-### displayed in the admin interface and through the others `yunohost service` commands.
-### (N.B.: this line only makes sense if the app adds a service to the system!)
-### If you're not using these lines:
-###		- You can remove these files in conf/.
-###		- Remove the section "REMOVE SERVICE INTEGRATION IN YUNOHOST" in the remove script
-###		- As well as the section "INTEGRATE SERVICE IN YUNOHOST" in the restore script
-###		- And the section "INTEGRATE SERVICE IN YUNOHOST" in the upgrade script
-
 yunohost service add $app --description="Self-hosted internet archiving" --log="/var/log/$app/$app.log"
 
-### Additional options starting with 3.8:
-###
-### --needs_exposed_ports "$port" a list of ports that needs to be publicly exposed
-###                               which will then be checked by YunoHost's diagnosis system
-###                               (N.B. DO NOT USE THIS is the port is only internal!!!)
-###
-### --test_status "some command"  a custom command to check the status of the service
-###                               (only relevant if 'systemctl status' doesn't do a good job)
-###
-### --test_conf "some command"    some command similar to "nginx -t" that validates the conf of the service
-###
-### Re-calling 'yunohost service add' during the upgrade script is the right way
-### to proceed if you later realize that you need to enable some flags that
-### weren't enabled on old installs (be careful it'll override the existing
-### service though so you should re-provide all relevant flags when doing so)
 
 #=================================================
 # START SYSTEMD SERVICE
