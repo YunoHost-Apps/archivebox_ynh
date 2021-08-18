@@ -31,6 +31,8 @@ is_public=$YNH_APP_ARG_IS_PUBLIC
 language=$YNH_APP_ARG_LANGUAGE
 password=$YNH_APP_ARG_PASSWORD
 
+admin_mail=$(ynh_user_get_info $admin 'mail')
+
 ### If it's a multi-instance app, meaning it can be installed several times independently
 ### The id of the app as stated in the manifest is available as $YNH_APP_ID
 ### The instance number is available as $YNH_APP_INSTANCE_NUMBER (equals "1", "2"...)
@@ -95,7 +97,7 @@ ynh_app_setting_set --app=$app --key=port --value=$port
 # Optional: Expose this port publicly
 # (N.B.: you only need to do this if the app actually needs to expose the port publicly.
 # If you do this and the app doesn't actually need you are CREATING SECURITY HOLES IN THE SERVER !)
-
+# TODO: test without this line
 # Open the port
 ynh_script_progression --message="Configuring firewall..." --time --weight=1
 ynh_exec_warn_less yunohost firewall allow --no-upnp TCP $port
@@ -104,14 +106,6 @@ ynh_exec_warn_less yunohost firewall allow --no-upnp TCP $port
 # INSTALL DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Installing dependencies..." --time --weight=1
-
-### `ynh_install_app_dependencies` allows you to add any "apt" dependencies to the package.
-### Those deb packages will be installed as dependencies of this package.
-### If you're not using this helper:
-###		- Remove the section "REMOVE DEPENDENCIES" in the remove script
-###		- Remove the variable "pkg_dependencies" in _common.sh
-###		- As well as the section "REINSTALL DEPENDENCIES" in the restore script
-###		- And the section "UPGRADE DEPENDENCIES" in the upgrade script
 
 ynh_install_app_dependencies $pkg_dependencies
 
@@ -122,26 +116,6 @@ ynh_script_progression --message="Configuring system user..." --time --weight=1
 
 # Create a system user
 ynh_system_user_create --username=$app --home_dir="$final_path"
-
-# TODO: remove mysql section
-#=================================================
-# CREATE A MYSQL DATABASE
-#=================================================
-#ynh_script_progression --message="Creating a MySQL database..." --time --weight=1
-
-### Use these lines if you need a database for the application.
-### `ynh_mysql_setup_db` will create a database, an associated user and a ramdom password.
-### The password will be stored as 'mysqlpwd' into the app settings,
-### and will be available as $db_pwd
-### If you're not using these lines:
-###		- Remove the section "BACKUP THE MYSQL DATABASE" in the backup script
-###		- Remove also the section "REMOVE THE MYSQL DATABASE" in the remove script
-###		- As well as the section "RESTORE THE MYSQL DATABASE" in the restore script
-
-#db_name=$(ynh_sanitize_dbid --db_name=$app)
-#db_user=$db_name
-#ynh_app_setting_set --app=$app --key=db_name --value=$db_name
-#ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -180,9 +154,6 @@ ynh_add_nginx_config
 #=================================================
 # SPECIFIC SETUP
 #=================================================
-# ...
-#=================================================
-
 #=================================================
 # PIP INSTALLATION
 #=================================================
@@ -191,6 +162,8 @@ ynh_script_progression --message="Install project via pip..." --weight=80
 python3 -m venv "${final_path}/venv"
 cp ../conf/requirements.txt "$final_path/requirements.txt"
 cp ../conf/start.sh "$final_path/start.sh"
+ynh_replace_string "__FINALPATH__"  "$final_path" "$final_path/start.sh"
+ynh_replace_string "__PORT__"  "$port" "$final_path/start.sh"
 chmod 760 "$final_path/start.sh"
 chown -R "$app" "$final_path"
 
@@ -201,7 +174,6 @@ chown -R "$app" "$final_path"
 	set -o nounset
 	ynh_exec_as $app $final_path/venv/bin/pip install --upgrade pip
 	ynh_exec_as $app $final_path/venv/bin/pip install -r "$final_path/requirements.txt"
-#	ynh_exec_as $app $final_path/venv/bin/pip install --upgrade "$pip_install_string"
 )
 
 #=================================================
@@ -209,24 +181,12 @@ chown -R "$app" "$final_path"
 #=================================================
 ynh_script_progression --message="Creating a data directory..." --time --weight=1
 
-### Use these lines if you need to create a directory to store "persistent files" for the application.
-### Usually this directory is used to store uploaded files or any file that won't be updated during
-### an upgrade and that won't be deleted during app removal
-### If you're not using these lines:
-###		- Remove the section "BACKUP THE DATA DIR" in the backup script
-###		- As well as the section "RESTORE THE DATA DIRECTORY" in the restore script
-
 datadir=/home/yunohost.app/$app
 ynh_app_setting_set --app=$app --key=datadir --value=$datadir
 
 mkdir -p $datadir
 
-# FIXME: this should be managed by the core in the future
-# Here, as a packager, you may have to tweak the ownerhsip/permissions
-# such that the appropriate users (e.g. maybe www-data) can access
-# files in some cases.
-# But FOR THE LOVE OF GOD, do not allow r/x for "others" on the entire folder -
-# this will be treated as a security issue.
+# permissions
 chmod 750 "$datadir"
 chmod -R o-rwx "$datadir"
 chown -R $app:www-data "$datadir"
@@ -235,7 +195,43 @@ chown -R $app:www-data "$datadir"
 #=================================================
 # INITIALIZE ARCHIVEBOX
 #=================================================
-#cd $datadir && ynh_exec_as $app archivebox manage createsuperuser --noinput --username archivebox2 --email max@mfowler.info
+ynh_script_progression --message="Initializing Archivebox" --time --weight=1
+cd $datadir && ynh_exec_as $app archivebox init
+
+ynh_script_progression --message="Checking if admin superuser already exists: $admin" --time --weight=1
+USER_EXISTS=$(cd $datadir && ynh_exec_as $app archivebox manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
+ynh_script_progression --message="Found users: $USER_EXISTS" --time --weight=1
+
+if [ $USER_EXISTS -eq 1 ]
+then
+    ynh_script_progression --message="User already exists: setting admin password" --time --weight=1
+ynh_exec_as $app /usr/bin/expect<<EOF
+set force_conservative 0  ;
+set timeout -1
+spawn sh -c "cd $datadir && archivebox manage changepassword $admin"
+match_max 100000
+expect "*?assword: "
+send -- "$password\r"
+expect "*?assword (again): "
+send -- "$password\r"
+expect eof
+EOF
+else
+    ynh_script_progression --message="Creating new archivebox superuser: $admin" --time --weight=1
+    ynh_exec_as $app /usr/bin/expect<<EOF
+set force_conservative 0  ;
+set timeout -1
+spawn sh -c "cd $datadir && archivebox manage createsuperuser --username $admin --email $admin_mail"
+match_max 100000
+expect "*?assword: "
+send -- "$password\r"
+expect "*?assword (again): "
+send -- "$password\r"
+expect eof
+EOF
+fi
+
+ynh_script_progression --message="Finishing Archivebox Setup" --time --weight=1
 cd $datadir && ynh_exec_as $app archivebox init --setup
 
 #=================================================
@@ -275,40 +271,8 @@ ynh_script_progression --message="Adding a configuration file..." --time --weigh
 #=================================================
 ynh_script_progression --message="Configuring a systemd service..." --time --weight=1
 
-### `ynh_systemd_config` is used to configure a systemd script for an app.
-### It can be used for apps that use sysvinit (with adaptation) or systemd.
-### Have a look at the app to be sure this app needs a systemd script.
-### `ynh_systemd_config` will use the file conf/systemd.service
-### If you're not using these lines:
-###		- You can remove those files in conf/.
-###		- Remove the section "BACKUP SYSTEMD" in the backup script
-###		- Remove also the section "STOP AND REMOVE SERVICE" in the remove script
-###		- As well as the section "RESTORE SYSTEMD" in the restore script
-###		- And the section "SETUP SYSTEMD" in the upgrade script
-
 # Create a dedicated systemd config
 ynh_add_systemd_config
-
-##=================================================
-## SETUP APPLICATION WITH CURL
-##=================================================
-#
-#### Use these lines only if the app installation needs to be finalized through
-#### web forms. We generally don't want to ask the final user,
-#### so we're going to use curl to automatically fill the fields and submit the
-#### forms.
-#
-## Set the app as temporarily public for curl call
-#ynh_script_progression --message="Configuring SSOwat..." --time --weight=1
-## Making the app public for curl
-#ynh_permission_update --permission="main" --add="visitors"
-#
-## Installation with curl
-#ynh_script_progression --message="Finalizing installation..." --time --weight=1
-#ynh_local_curl "/INSTALL_PATH" "key1=value1" "key2=value2" "key3=value3"
-#
-## Remove the public access
-#ynh_permission_update --permission="main" --remove="visitors"
 
 #=================================================
 # GENERIC FINALIZATION

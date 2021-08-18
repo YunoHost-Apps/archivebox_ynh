@@ -5,7 +5,7 @@
 #=================================================
 
 # dependencies used by the app
-pkg_dependencies="python3-venv"
+pkg_dependencies="python3-venv expect"
 
 #=================================================
 # PERSONAL HELPERS
