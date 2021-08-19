@@ -29,7 +29,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
     * required to be run at the base path / , subpaths not yet supported
     * currently only tested on amd64
-    * haven't yet implemented single-sign or LDAP integration 
+    * haven't yet implemented single-sign on or LDAP integration 
     
 ## Documentation and resources
 
