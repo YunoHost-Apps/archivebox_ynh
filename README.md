@@ -1,4 +1,4 @@
-# Archivebox Yunohost Package
+# ArchiveBox Yunohost Package
 
 [![Integration level](https://dash.yunohost.org/integration/archivebox.svg)](https://dash.yunohost.org/appci/app/archivebox) ![](https://ci-apps.yunohost.org/ci/badges/archivebox.status.svg)  ![](https://ci-apps.yunohost.org/ci/badges/archivebox.maintain.svg)
 [![Install archivebox with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=archivebox)
