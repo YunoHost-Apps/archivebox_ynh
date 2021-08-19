@@ -11,7 +11,7 @@
     "upstream": {
         "license": "MIT",
         "website": "https://archivebox.io/",
-        "demo": "https://archivebox.io/",
+        "demo": "https://archiveboxdemo.commoninternet.net",
         "admindoc": "https://yunohost.org/packaging_apps",
         "userdoc": "https://yunohost.org/apps",
         "code": "https://github.com/ArchiveBox/ArchiveBox"
