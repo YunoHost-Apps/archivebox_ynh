@@ -19,7 +19,7 @@ ArchiveBox is a powerful, self-hosted internet archiving solution to collect, sa
 
 **Shipped version:** 1.0~ynh1
 
-**Demo:** https://archivebox.io/
+**Demo:** https://archiveboxdemo.commoninternet.net
 
 ## Screenshots
 

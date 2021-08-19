@@ -15,7 +15,7 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 **Version incluse :** 1.0~ynh1
 
-**Démo :** https://archivebox.io/
+**Démo :** https://archiveboxdemo.commoninternet.net
 
 ## Captures d'écran
 
