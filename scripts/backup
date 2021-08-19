@@ -30,7 +30,6 @@ app=$YNH_APP_INSTANCE_NAME
 
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 domain=$(ynh_app_setting_get --app=$app --key=domain)
-db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 datadir=$(ynh_app_setting_get --app=$app --key=datadir)
 
 #=================================================
@@ -62,13 +61,6 @@ ynh_backup --src_path="$datadir" --is_big
 ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
 #=================================================
-# BACKUP FAIL2BAN CONFIGURATION
-#=================================================
-
-ynh_backup --src_path="/etc/fail2ban/jail.d/$app.conf"
-ynh_backup --src_path="/etc/fail2ban/filter.d/$app.conf"
-
-#=================================================
 # SPECIFIC BACKUP
 #=================================================
 # BACKUP LOGROTATE
@@ -81,12 +73,6 @@ ynh_backup --src_path="/etc/logrotate.d/$app"
 #=================================================
 
 ynh_backup --src_path="/etc/systemd/system/$app.service"
-
-#=================================================
-# BACKUP VARIOUS FILES
-#=================================================
-
-ynh_backup --src_path="/etc/$app/"
 
 #=================================================
 # END OF SCRIPT

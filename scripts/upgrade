@@ -17,11 +17,14 @@ ynh_script_progression --message="Loading installation settings..." --time --wei
 app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_app_setting_get --app=$app --key=path)
+#path_url=$YNH_APP_ARG_PATH
+# we can only add support for subpaths once this is resolved in archivebox
+# https://github.com/ArchiveBox/ArchiveBox/issues/724
+path_url="/"
 admin=$(ynh_app_setting_get --app=$app --key=admin)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 language=$(ynh_app_setting_get --app=$app --key=language)
-db_name=$(ynh_app_setting_get --app=$app --key=db_name)
+port=$(ynh_app_setting_get --app=$app --key=port)
 
 #=================================================
 # CHECK VERSION
@@ -63,42 +66,11 @@ ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..." --time --weight=1
 
-#
-# N.B. : the followings setting migrations snippets are provided as *EXAMPLES*
-# of what you may want to do in some cases (e.g. a setting was not defined on
-# some legacy installs and you therefore want to initiaze stuff during upgrade)
-#
-
-# If db_name doesn't exist, create it
-#if [ -z "$db_name" ]; then
-#	db_name=$(ynh_sanitize_dbid --db_name=$app)
-#	ynh_app_setting_set --app=$app --key=db_name --value=$db_name
-#fi
-
-# If final_path doesn't exist, create it
-#if [ -z "$final_path" ]; then
-#	final_path=/var/www/$app
-#	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-#fi
-
-### If nobody installed your app before 4.1,
-### then you may safely remove these lines
-
 # Cleaning legacy permissions
 if ynh_legacy_permissions_exists; then
 	ynh_legacy_permissions_delete_all
 
 	ynh_app_setting_delete --app=$app --key=is_public
-fi
-
-if ! ynh_permission_exists --permission="admin"; then
-	# Create the required permissions
-	ynh_permission_create --permission="admin" --url="/admin" --allowed=$admin
-fi
-
-# Create a permission if needed
-if ! ynh_permission_exists --permission="api"; then
-	ynh_permission_create --permission="api" --url="/api" --allowed="visitors" --show_tile="false" --protected="true"
 fi
 
 #=================================================
@@ -110,15 +82,30 @@ ynh_script_progression --message="Making sure dedicated system user exists..." -
 ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
+# UPGRADE VIA PIP
 #=================================================
+
+datadir=/home/yunohost.app/$app
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
-	ynh_script_progression --message="Upgrading source files..." --time --weight=1
+	ynh_script_progression --message="Upgrading via pip" --time --weight=1
+    python3 -m venv "${final_path}/venv"
+    cp ../conf/requirements.txt "$final_path/requirements.txt"
+    chown -R "$app" "$final_path"
 
-	# Download, check integrity, uncompress and patch the source from app.src
-	ynh_setup_source --dest_dir="$final_path"
+    #run source in a 'sub shell'
+    (
+        set +o nounset
+        source "${final_path}/venv/bin/activate"
+        set -o nounset
+        ynh_exec_as $app $final_path/venv/bin/pip install --upgrade pip
+        ynh_exec_as $app $final_path/venv/bin/pip install -r "$final_path/requirements.txt"
+    )
+
+    # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
+    ynh_script_progression --message="Finishing Archivebox Setup" --time --weight=1
+    cd $datadir && ynh_exec_as $app archivebox init --setup
 fi
 
 # FIXME: this should be managed by the core in the future
@@ -146,36 +133,11 @@ ynh_script_progression --message="Upgrading dependencies..." --time --weight=1
 
 ynh_install_app_dependencies $pkg_dependencies
 
-
-#=================================================
-# SPECIFIC UPGRADE
-#=================================================
-# TODO: how do we upgrade archivebox?
-
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-ynh_script_progression --message="Updating a configuration file..." --time --weight=1
-
-### Same as during install
-###
-### The file will automatically be backed-up if it's found to be manually modified (because
-### ynh_add_config keeps track of the file's checksum)
-
-ynh_add_config --template="some_config_file" --destination="$final_path/some_config_file"
-
-# FIXME: this should be handled by the core in the future
-# You may need to use chmod 600 instead of 400,
-# for example if the app is expected to be able to modify its own config
-chmod 400 "$final_path/some_config_file"
-chown $app:$app "$final_path/some_config_file"
-
-### For more complex cases where you want to replace stuff using regexes,
-### you shoud rely on ynh_replace_string (which is basically a wrapper for sed)
-### When doing so, you also need to manually call ynh_store_file_checksum
-###
-### ynh_replace_string --match_string="match_string" --replace_string="replace_string" --target_file="$final_path/some_config_file"
-### ynh_store_file_checksum --file="$final_path/some_config_file"
+# config files for archive box live in $data_dir/ArchiveBox.conf
+# and are handled manually outside of YunoHost
 
 #=================================================
 # SETUP SYSTEMD
@@ -208,14 +170,6 @@ yunohost service add $app --description="A short description of the app" --log="
 ynh_script_progression --message="Starting a systemd service..." --time --weight=1
 
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
-
-#=================================================
-# UPGRADE FAIL2BAN
-#=================================================
-ynh_script_progression --message="Reconfiguring Fail2Ban..." --time --weight=1
-
-# Create a dedicated Fail2Ban config
-ynh_add_fail2ban_config --logpath="/var/log/nginx/${domain}-error.log" --failregex="Regex to match into the log for a failed login"
 
 #=================================================
 # RELOAD NGINX
