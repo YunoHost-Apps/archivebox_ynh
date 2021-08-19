@@ -48,20 +48,18 @@ admin_mail=$(ynh_user_get_info $admin 'mail')
 ### db names...
 app=$YNH_APP_INSTANCE_NAME
 
-ynh_script_progression --message="INFO: $YNH_STDINFO" --time --weight=1
-
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
-### About --weight and --time
+### About --weight and
 ### ynh_script_progression will show to your final users the progression of each scripts.
 ### In order to do that, --weight will represent the relative time of execution compared to the other steps in the script.
-### --time is a packager option, it will show you the execution time since the previous call.
+###  is a packager option, it will show you the execution time since the previous call.
 ### This option should be removed before releasing your app.
-### Use the execution time, given by --time, to estimate the weight of a step.
+### Use the execution time, given by , to estimate the weight of a step.
 ### A common way to do it is to set a weight equal to the execution time in second +1.
 ### The execution time is given for the duration since the previous call. So the weight should be applied to this previous call.
-ynh_script_progression --message="Validating installation parameters..." --time --weight=1
+ynh_script_progression --message="Validating installation parameters..."  --weight=1
 
 ### If the app uses NGINX as web server (written in HTML/PHP in most cases), the final path should be "/var/www/$app".
 ### If the app provides an internal web server (or uses another application server such as uWSGI), the final path should be "/opt/yunohost/$app"
@@ -74,7 +72,7 @@ ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
-ynh_script_progression --message="Storing installation settings..." --time --weight=1
+ynh_script_progression --message="Storing installation settings..."  --weight=1
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
@@ -86,48 +84,31 @@ ynh_app_setting_set --app=$app --key=language --value=$language
 #=================================================
 # FIND AND OPEN A PORT
 #=================================================
-ynh_script_progression --message="Finding an available port..." --time --weight=1
-
-### Use these lines if you have to open a port for the application
-### `ynh_find_port` will find the first available port starting from the given port.
-### If you're not using these lines:
-###		- Remove the section "CLOSE A PORT" in the remove script
+ynh_script_progression --message="Finding an available port..."  --weight=1
 
 # Find an available port
 port=$(ynh_find_port --port=8095)
 ynh_app_setting_set --app=$app --key=port --value=$port
 
-# Optional: Expose this port publicly
-# (N.B.: you only need to do this if the app actually needs to expose the port publicly.
-# If you do this and the app doesn't actually need you are CREATING SECURITY HOLES IN THE SERVER !)
-# TODO: test without this line
-# Open the port
-ynh_script_progression --message="Configuring firewall..." --time --weight=1
-ynh_exec_warn_less yunohost firewall allow --no-upnp TCP $port
-
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Installing dependencies..." --time --weight=1
+ynh_script_progression --message="Installing dependencies..."  --weight=1
 
 ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Configuring system user..." --time --weight=1
+ynh_script_progression --message="Configuring system user..."  --weight=1
 
 # Create a system user
 ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
+# CREATE FINAL_PATH FOLDER
 #=================================================
-ynh_script_progression --message="Setting up source files..." --time --weight=1
-
-### `ynh_setup_source` is used to install an app from a zip or tar.gz file,
-### downloaded from an upstream source, like a git repository.
-### `ynh_setup_source` use the file conf/app.src
+ynh_script_progression --message="Setting up source files..."  --weight=1
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
@@ -147,10 +128,9 @@ chown -R $app:www-data "$final_path"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring NGINX web server..." --time --weight=1
+ynh_script_progression --message="Configuring NGINX web server..."  --weight=1
 
 ### `ynh_add_nginx_config` will use the file conf/nginx.conf
-
 # Create a dedicated NGINX config
 ynh_add_nginx_config
 
@@ -164,9 +144,7 @@ ynh_script_progression --message="Install project via pip..." --weight=80
 
 python3 -m venv "${final_path}/venv"
 cp ../conf/requirements.txt "$final_path/requirements.txt"
-cp ../conf/start.sh "$final_path/start.sh"
-ynh_replace_string "__FINALPATH__"  "$final_path" "$final_path/start.sh"
-ynh_replace_string "__PORT__"  "$port" "$final_path/start.sh"
+ynh_add_config --template="../conf/start.sh" --destination="$final_path/start.sh"
 chmod 760 "$final_path/start.sh"
 chown -R "$app" "$final_path"
 
@@ -182,7 +160,7 @@ chown -R "$app" "$final_path"
 #=================================================
 # CREATE DATA DIRECTORY
 #=================================================
-ynh_script_progression --message="Creating a data directory..." --time --weight=1
+ynh_script_progression --message="Creating a data directory..."  --weight=1
 
 datadir=/home/yunohost.app/$app
 ynh_app_setting_set --app=$app --key=datadir --value=$datadir
@@ -198,16 +176,16 @@ chown -R $app:www-data "$datadir"
 #=================================================
 # INITIALIZE ARCHIVEBOX
 #=================================================
-ynh_script_progression --message="Initializing Archivebox" --time --weight=1
+ynh_script_progression --message="Initializing Archivebox"  --weight=1
 cd $datadir && ynh_exec_as $app archivebox init
 
-ynh_script_progression --message="Checking if admin superuser already exists: $admin" --time --weight=1
+ynh_script_progression --message="Checking if admin superuser already exists: $admin"  --weight=1
 USER_EXISTS=$(cd $datadir && ynh_exec_as $app archivebox manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
-ynh_script_progression --message="Found users: $USER_EXISTS" --time --weight=1
+ynh_script_progression --message="Found users: $USER_EXISTS"  --weight=1
 
 if [ $USER_EXISTS -eq 1 ]
 then
-    ynh_script_progression --message="User already exists: setting admin password" --time --weight=1
+    ynh_script_progression --message="User already exists: setting admin password"  --weight=1
 ynh_exec_as $app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
@@ -220,7 +198,7 @@ send -- "$password\r"
 expect eof
 EOF
 else
-    ynh_script_progression --message="Creating new archivebox superuser: $admin" --time --weight=1
+    ynh_script_progression --message="Creating new archivebox superuser: $admin"  --weight=1
     ynh_exec_as $app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
@@ -234,7 +212,7 @@ expect eof
 EOF
 fi
 
-ynh_script_progression --message="Finishing Archivebox Setup" --time --weight=1
+ynh_script_progression --message="Finishing Archivebox Setup"  --weight=1
 cd $datadir && ynh_exec_as $app archivebox init --setup
 
 #=================================================
@@ -246,7 +224,7 @@ cd $datadir && ynh_exec_as $app archivebox init --setup
 #=================================================
 # SETUP SYSTEMD
 #=================================================
-ynh_script_progression --message="Configuring a systemd service..." --time --weight=1
+ynh_script_progression --message="Configuring a systemd service..."  --weight=1
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
@@ -256,7 +234,7 @@ ynh_add_systemd_config
 #=================================================
 # SETUP LOGROTATE
 #=================================================
-ynh_script_progression --message="Configuring log rotation..." --time --weight=1
+ynh_script_progression --message="Configuring log rotation..."  --weight=1
 
 # Use logrotate to manage application logfile(s)
 ynh_use_logrotate
@@ -264,14 +242,14 @@ ynh_use_logrotate
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-ynh_script_progression --message="Integrating service in YunoHost..." --time --weight=1
+ynh_script_progression --message="Integrating service in YunoHost..."  --weight=1
 
 yunohost service add $app --description="Self-hosted internet archiving" --log="/var/log/$app/$app.log"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --time --weight=1
+ynh_script_progression --message="Starting a systemd service..."  --weight=1
 
 # Start a systemd service
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
@@ -279,7 +257,7 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$ap
 #=================================================
 # SETUP SSOWAT
 #=================================================
-ynh_script_progression --message="Configuring permissions..." --time --weight=1
+ynh_script_progression --message="Configuring permissions..."  --weight=1
 
 # Make app public if necessary
 if [ $is_public -eq 1 ]
@@ -292,7 +270,7 @@ fi
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading NGINX web server..." --time --weight=1
+ynh_script_progression --message="Reloading NGINX web server..."  --weight=1
 
 ynh_systemd_action --service_name=nginx --action=reload
 
@@ -300,4 +278,4 @@ ynh_systemd_action --service_name=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --time --last
+ynh_script_progression --message="Installation of $app completed"  --last

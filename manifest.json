@@ -3,7 +3,7 @@
     "id": "archivebox",
     "packaging_format": 1,
     "description": {
-        "en": "ArchiveBox is a powerful, self-hosted internet archiving solution to collect, save, and view sites you want to preserve offline.",
+        "en": "A self-hosted internet archiving solution to collect, save, and view sites you want to preserve offline.",
         "fr": ""
     },
     "version": "1.4~ynh1",
@@ -12,8 +12,7 @@
         "license": "MIT",
         "website": "https://archivebox.io/",
         "demo": "https://archiveboxdemo.commoninternet.net",
-        "admindoc": "https://yunohost.org/packaging_apps",
-        "userdoc": "https://yunohost.org/apps",
+        "admindoc": "https://github.com/ArchiveBox/ArchiveBox/wiki",
         "code": "https://github.com/ArchiveBox/ArchiveBox"
     },
     "license": "MIT",
@@ -22,7 +21,7 @@
         "email": "max@mfowler.info"
     },
     "requirements": {
-        "yunohost": ">= 4.1.3"
+        "yunohost": ">= 4.1.7"
     },
     "multi_instance": true,
     "services": [
@@ -43,7 +42,10 @@
             {
                 "name": "is_public",
                 "type": "boolean",
-                "default": true
+                "default": true,
+                "help": {
+                    "en": "If true, saved archives will be viewable without logging in."
+                }
             },
             {
                 "name": "language",
@@ -59,10 +61,8 @@
                 "name": "password",
                 "type": "password",
                 "help": {
-                    "en": "Use the help field to add an information for the admin about this question.",
-                    "fr": "Utilisez le champ aide pour ajouter une information à l'intention de l'administrateur à propos de cette question."
-                },
-                "example": "Choose a password"
+                    "en": "The password used to login as an admin for this app"
+                }
             }
         ]
     }
