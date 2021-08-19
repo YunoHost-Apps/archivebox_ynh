@@ -17,7 +17,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 ArchiveBox is a powerful, self-hosted internet archiving solution to collect, save, and view sites you want to preserve offline.
 
-**Shipped version:** 1.0~ynh1
+**Shipped version:** 1.4~ynh1
 
 **Demo:** https://archiveboxdemo.commoninternet.net
 
