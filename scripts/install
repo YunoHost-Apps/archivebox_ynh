@@ -179,6 +179,11 @@ chown -R $app:www-data "$datadir"
 #=================================================
 # INITIALIZE ARCHIVEBOX
 #=================================================
+(
+set +o nounset
+source "${final_path}/venv/bin/activate"
+set -o nounset
+
 ynh_script_progression --message="Initializing Archivebox"  --weight=1
 cd $datadir && ynh_exec_as $app $archivebox_cmd init
 
@@ -217,6 +222,7 @@ fi
 
 ynh_script_progression --message="Finishing Archivebox Setup"  --weight=1
 cd $datadir && ynh_exec_as $app $archivebox_cmd init --setup
+)
 
 #=================================================
 # ADD A CONFIGURATION
