@@ -157,6 +157,9 @@ chown -R "$app" "$final_path"
 	ynh_exec_as $app $final_path/venv/bin/pip install -r "$final_path/requirements.txt"
 )
 
+# we use this virtualenv archivebox for further commands now
+archivebox_cmd="$final_path/venv/bin/archivebox"
+
 #=================================================
 # CREATE DATA DIRECTORY
 #=================================================
@@ -177,10 +180,10 @@ chown -R $app:www-data "$datadir"
 # INITIALIZE ARCHIVEBOX
 #=================================================
 ynh_script_progression --message="Initializing Archivebox"  --weight=1
-cd $datadir && ynh_exec_as $app archivebox init
+cd $datadir && ynh_exec_as $app $archivebox_cmd init
 
 ynh_script_progression --message="Checking if admin superuser already exists: $admin"  --weight=1
-USER_EXISTS=$(cd $datadir && ynh_exec_as $app archivebox manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
+USER_EXISTS=$(cd $datadir && ynh_exec_as $app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
 ynh_script_progression --message="Found users: $USER_EXISTS"  --weight=1
 
 if [ $USER_EXISTS -eq 1 ]
@@ -189,7 +192,7 @@ then
 ynh_exec_as $app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
-spawn sh -c "cd $datadir && archivebox manage changepassword $admin"
+spawn sh -c "cd $datadir && $archivebox_cmd manage changepassword $admin"
 match_max 100000
 expect "*?assword: "
 send -- "$password\r"
@@ -202,7 +205,7 @@ else
     ynh_exec_as $app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
-spawn sh -c "cd $datadir && archivebox manage createsuperuser --username $admin --email $admin_mail"
+spawn sh -c "cd $datadir && $archivebox_cmd manage createsuperuser --username $admin --email $admin_mail"
 match_max 100000
 expect "*?assword: "
 send -- "$password\r"
@@ -213,7 +216,7 @@ EOF
 fi
 
 ynh_script_progression --message="Finishing Archivebox Setup"  --weight=1
-cd $datadir && ynh_exec_as $app archivebox init --setup
+cd $datadir && ynh_exec_as $app $archivebox_cmd init --setup
 
 #=================================================
 # ADD A CONFIGURATION

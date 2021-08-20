@@ -103,9 +103,12 @@ then
         ynh_exec_as $app $final_path/venv/bin/pip install -r "$final_path/requirements.txt"
     )
 
+    # we use this virtualenv archivebox for further commands now
+    archivebox_cmd="$final_path/venv/bin/archivebox"
+
     # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
     ynh_script_progression --message="Finishing Archivebox Setup"  --weight=1
-    cd $datadir && ynh_exec_as $app archivebox init --setup
+    cd $datadir && ynh_exec_as $app $archivebox_cmd init --setup
 fi
 
 # FIXME: this should be managed by the core in the future
