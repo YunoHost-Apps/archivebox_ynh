@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 source __FINALPATH__/venv/bin/activate
-archivebox server __PORT__
+__FINALPATH__/venv/bin/archivebox server __PORT__
