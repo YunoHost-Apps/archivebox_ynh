@@ -12,7 +12,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_script_progression --message="Loading installation settings..." --time --weight=1
+ynh_script_progression --message="Loading installation settings..." --weight=1
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -30,18 +30,12 @@ port=$(ynh_app_setting_get --app=$app --key=port)
 # CHECK VERSION
 #=================================================
 
-### This helper will compare the version of the currently installed app and the version of the upstream package.
-### $upgrade_type can have 2 different values
-### - UPGRADE_APP if the upstream app version has changed
-### - UPGRADE_PACKAGE if only the YunoHost package has changed
-### ynh_check_app_version_changed will stop the upgrade if the app is up to date.
-### UPGRADE_APP should be used to upgrade the core app only if there's an upgrade to do.
 upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --time --weight=1
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=1
 
 # Backup the current version of the app
 ynh_backup_before_upgrade
@@ -57,14 +51,14 @@ ynh_abort_if_errors
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..." --time --weight=1
+ynh_script_progression --message="Stopping a systemd service..." --weight=1
 
 ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Ensuring downward compatibility..." --time --weight=1
+ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
 # Cleaning legacy permissions
 if ynh_legacy_permissions_exists; then
@@ -76,7 +70,7 @@ fi
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..." --time --weight=1
+ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
 
 # Create a dedicated user (if not existing)
 ynh_system_user_create --username=$app --home_dir="$final_path"
@@ -89,7 +83,7 @@ datadir=/home/yunohost.app/$app
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
-	ynh_script_progression --message="Upgrading via pip" --time --weight=1
+	ynh_script_progression --message="Upgrading via pip" --weight=1
     python3 -m venv "${final_path}/venv"
     cp ../conf/requirements.txt "$final_path/requirements.txt"
     chown -R "$app" "$final_path"
@@ -103,17 +97,14 @@ then
         ynh_exec_as $app $final_path/venv/bin/pip install -r "$final_path/requirements.txt"
     )
 
+    # we use this virtualenv archivebox for further commands now
+    archivebox_cmd="$final_path/venv/bin/archivebox"
+
     # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
-    ynh_script_progression --message="Finishing Archivebox Setup" --time --weight=1
-    cd $datadir && ynh_exec_as $app archivebox init --setup
+    ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
+    cd $datadir && ynh_exec_as $app $archivebox_cmd init --setup
 fi
 
-# FIXME: this should be managed by the core in the future
-# Here, as a packager, you may have to tweak the ownerhsip/permissions
-# such that the appropriate users (e.g. maybe www-data) can access
-# files in some cases.
-# But FOR THE LOVE OF GOD, do not allow r/x for "others" on the entire folder -
-# this will be treated as a security issue.
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
@@ -121,7 +112,7 @@ chown -R $app:www-data "$final_path"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..." --time --weight=1
+ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
@@ -129,7 +120,7 @@ ynh_add_nginx_config
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Upgrading dependencies..." --time --weight=1
+ynh_script_progression --message="Upgrading dependencies..." --weight=1
 
 ynh_install_app_dependencies $pkg_dependencies
 
@@ -142,7 +133,7 @@ ynh_install_app_dependencies $pkg_dependencies
 #=================================================
 # SETUP SYSTEMD
 #=================================================
-ynh_script_progression --message="Upgrading systemd configuration..." --time --weight=1
+ynh_script_progression --message="Upgrading systemd configuration..." --weight=1
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
@@ -152,7 +143,7 @@ ynh_add_systemd_config
 #=================================================
 # SETUP LOGROTATE
 #=================================================
-ynh_script_progression --message="Upgrading logrotate configuration..." --time --weight=1
+ynh_script_progression --message="Upgrading logrotate configuration..." --weight=1
 
 # Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
@@ -160,21 +151,21 @@ ynh_use_logrotate --non-append
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-ynh_script_progression --message="Integrating service in YunoHost..." --time --weight=1
+ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description="A short description of the app" --log="/var/log/$app/$app.log"
+yunohost service add $app --description="Self-hosted internet archiving" --log="/var/log/$app/$app.log"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --time --weight=1
+ynh_script_progression --message="Starting a systemd service..." --weight=1
 
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading NGINX web server..." --time --weight=1
+ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 
 ynh_systemd_action --service_name=nginx --action=reload
 
@@ -182,4 +173,4 @@ ynh_systemd_action --service_name=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Upgrade of $app completed" --time --last
+ynh_script_progression --message="Upgrade of $app completed" --last

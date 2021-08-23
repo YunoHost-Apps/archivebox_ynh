@@ -32,8 +32,7 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 ## Documentations et ressources
 
 * Site officiel de l'app : https://archivebox.io/
-* Documentation officielle utilisateur : https://yunohost.org/apps
-* Documentation officielle de l'admin : https://yunohost.org/packaging_apps
+* Documentation officielle de l'admin : https://github.com/ArchiveBox/ArchiveBox/wiki
 * Dépôt de code officiel de l'app : https://github.com/ArchiveBox/ArchiveBox
 * Documentation YunoHost pour cette app : https://yunohost.org/app_archivebox
 * Signaler un bug : https://github.com/YunoHost-Apps/archivebox_ynh/issues
