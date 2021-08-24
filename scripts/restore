@@ -120,8 +120,10 @@ yunohost service add $app --description="Self-hosted internet archiving" --log="
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --weight=1
+ynh_script_progression --message="Ensuring systemd log folder is restored..." --weight=1
+mkdir -p /var/log/$app
 
+ynh_script_progression --message="Starting a systemd service..." --weight=1
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
 #=================================================

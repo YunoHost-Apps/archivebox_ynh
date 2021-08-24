@@ -6,7 +6,7 @@
         "en": "A self-hosted internet archiving solution to collect, save, and view sites you want to preserve offline.",
         "fr": ""
     },
-    "version": "1.4~ynh1",
+    "version": "1.5~ynh1",
     "url": "https://archivebox.io/",
     "upstream": {
         "license": "MIT",
