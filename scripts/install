@@ -133,6 +133,13 @@ chown -R "$app" "$final_path"
 archivebox_cmd="$final_path/venv/bin/archivebox"
 
 #=================================================
+# INSTALL NODE DEPENDENCIES
+#=================================================
+cp ../conf/package.json "$final_path/package.json"
+cp ../conf/package-lock.json "$final_path/package-lock.json"
+cd $final_path; npm ci
+
+#=================================================
 # CREATE DATA DIRECTORY
 #=================================================
 ynh_script_progression --message="Creating a data directory..." --weight=1
@@ -146,6 +153,11 @@ mkdir -p $datadir
 chmod 750 "$datadir"
 chmod -R o-rwx "$datadir"
 chown -R $app:www-data "$datadir"
+
+#=================================================
+# CREATE ARCHIVEBOX CONFIG
+#=================================================
+
 
 #=================================================
 # INITIALIZE ARCHIVEBOX
