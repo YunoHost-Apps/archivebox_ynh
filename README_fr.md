@@ -15,7 +15,6 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 **Version incluse :** 0.6.2~ynh8
 
-
 **Démo :** https://archiveboxdemo.commoninternet.net
 
 ## Captures d'écran
