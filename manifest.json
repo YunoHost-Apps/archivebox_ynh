@@ -3,8 +3,8 @@
     "id": "archivebox",
     "packaging_format": 1,
     "description": {
-        "en": "A self-hosted internet archiving solution to collect, save, and view sites you want to preserve offline.",
-        "fr": ""
+        "en": "Archiving solution to collect, save, and view sites you want to preserve offline",
+        "fr": "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
     },
     "version": "0.6.2~ynh8",
     "url": "https://archivebox.io/",
@@ -31,13 +31,11 @@
         "install" : [
             {
                 "name": "domain",
-                "type": "domain",
-                "example": "example.com"
+                "type": "domain"
             },
             {
                 "name": "admin",
-                "type": "user",
-                "example": "johndoe"
+                "type": "user"
             },
             {
                 "name": "is_public",
@@ -61,7 +59,8 @@
                 "name": "password",
                 "type": "password",
                 "help": {
-                    "en": "The password used to login as an admin for this app"
+                    "en": "The password used to login as an admin for this app",
+                    "fr": "Le mot de passe utilisé pour se connecter en tant qu'administrateur pour cette application"
                 }
             }
         ]
