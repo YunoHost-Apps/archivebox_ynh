@@ -15,7 +15,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 ## Overview
 
-A self-hosted internet archiving solution to collect, save, and view sites you want to preserve offline.
+Archiving solution to collect, save, and view sites you want to preserve offline
 
 **Shipped version:** 0.6.2~ynh8
 
