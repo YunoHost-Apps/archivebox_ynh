@@ -76,6 +76,18 @@ ynh_script_progression --message="Making sure dedicated system user exists..." -
 ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
+# UPGRADE DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Upgrading dependencies..." --weight=1
+
+ynh_install_app_dependencies $pkg_dependencies
+
+if [ $nodejs_version != $(ynh_app_setting_get --app=$app --key=nodejs_version) ]; then
+	ynh_remove_nodejs
+	ynh_install_nodejs --nodejs_version=$nodejs_version
+fi
+
+#=================================================
 # UPGRADE VIA PIP
 #=================================================
 
@@ -116,13 +128,6 @@ ynh_script_progression --message="Upgrading NGINX web server configuration..." -
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
-
-#=================================================
-# UPGRADE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Upgrading dependencies..." --weight=1
-
-ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # UPDATE A CONFIG FILE

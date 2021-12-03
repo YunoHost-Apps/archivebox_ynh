@@ -77,6 +77,8 @@ ynh_script_progression --message="Installing dependencies..." --weight=8
 
 ynh_install_app_dependencies $pkg_dependencies
 
+ynh_install_nodejs --nodejs_version=$nodejs_version
+
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
@@ -137,7 +139,7 @@ archivebox_cmd="$final_path/venv/bin/archivebox"
 #=================================================
 cp ../conf/package.json "$final_path/package.json"
 cp ../conf/package-lock.json "$final_path/package-lock.json"
-cd $final_path; npm ci
+cd $final_path; ynh_npm ci
 
 #=================================================
 # CREATE DATA DIRECTORY
