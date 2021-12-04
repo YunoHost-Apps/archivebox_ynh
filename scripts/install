@@ -141,6 +141,9 @@ cp ../conf/package.json "$final_path/package.json"
 cp ../conf/package-lock.json "$final_path/package-lock.json"
 cd $final_path; ynh_npm ci
 
+ynh_node_path=$ynh_node
+ynh_script_progression --message="ynh_node_path: $ynh_node_path" --weight=1
+
 #=================================================
 # CREATE DATA DIRECTORY
 #=================================================
@@ -160,6 +163,13 @@ chown -R $app:www-data "$datadir"
 # CREATE ARCHIVEBOX CONFIG
 #=================================================
 
+# copy configuration file
+ynh_add_config --template="../conf/ArchiveBox.conf" --destination="$datadir/ArchiveBox.conf"
+
+# permissions
+chmod 750 "$datadir"
+chmod -R o-rwx "$datadir"
+chown -R $app:www-data "$datadir"
 
 #=================================================
 # INITIALIZE ARCHIVEBOX
