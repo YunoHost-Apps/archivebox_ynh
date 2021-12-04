@@ -143,6 +143,7 @@ cd $final_path; ynh_npm ci
 
 ynh_node_path=$ynh_node
 ynh_script_progression --message="ynh_node_path: $ynh_node_path" --weight=1
+ynh_script_progression --message="ynh_node_load_PATH: $ynh_node_load_PATH" --weight=1
 
 #=================================================
 # CREATE DATA DIRECTORY
@@ -212,7 +213,7 @@ EOF
 fi
 
 ynh_script_progression --message="Finishing Archivebox Setup"  --weight=1
-cd $datadir && ynh_exec_as $app $archivebox_cmd init --setup
+cd $datadir && ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
 
 #=================================================
 # ADD A CONFIGURATION
