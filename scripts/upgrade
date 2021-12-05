@@ -99,9 +99,6 @@ fi
 
 datadir=/home/yunohost.app/$app
 
-# debug message
-ynh_script_progression --message="ynh_node_load_PATH: $ynh_node_load_PATH" --weight=1
-
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading via pip" --weight=1
