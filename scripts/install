@@ -216,12 +216,6 @@ ynh_script_progression --message="Finishing Archivebox Setup"  --weight=1
 cd $datadir && ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
 
 #=================================================
-# ADD A CONFIGURATION
-#=================================================
-# config files for archive box live in $data_dir/ArchiveBox.conf
-# and are handled manually outside of YunoHost
-
-#=================================================
 # SETUP SYSTEMD
 #=================================================
 ynh_script_progression --message="Configuring a systemd service..." --weight=1

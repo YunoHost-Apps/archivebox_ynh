@@ -26,6 +26,12 @@ final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 language=$(ynh_app_setting_get --app=$app --key=language)
 port=$(ynh_app_setting_get --app=$app --key=port)
 
+
+#=================================================
+# SET CORRECT NODE VERSION
+#=================================================
+ynh_use_nodejs --nodejs_version=$nodejs_version
+
 #=================================================
 # CHECK VERSION
 #=================================================
@@ -93,6 +99,9 @@ fi
 
 datadir=/home/yunohost.app/$app
 
+# debug message
+ynh_script_progression --message="ynh_node_load_PATH: $ynh_node_load_PATH" --weight=1
+
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading via pip" --weight=1
@@ -114,7 +123,7 @@ then
 
     # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
     ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
-    cd $datadir && ynh_exec_as $app $archivebox_cmd init --setup
+    cd $datadir && ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
 fi
 
 chmod 750 "$final_path"
@@ -128,12 +137,6 @@ ynh_script_progression --message="Upgrading NGINX web server configuration..." -
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
-
-#=================================================
-# UPDATE A CONFIG FILE
-#=================================================
-# config files for archive box live in $data_dir/ArchiveBox.conf
-# and are handled manually outside of YunoHost
 
 #=================================================
 # SETUP SYSTEMD
