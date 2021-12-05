@@ -77,6 +77,8 @@ ynh_script_progression --message="Installing dependencies..." --weight=8
 
 ynh_install_app_dependencies $pkg_dependencies
 
+ynh_install_nodejs --nodejs_version=$nodejs_version
+
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
@@ -137,7 +139,9 @@ archivebox_cmd="$final_path/venv/bin/archivebox"
 #=================================================
 cp ../conf/package.json "$final_path/package.json"
 cp ../conf/package-lock.json "$final_path/package-lock.json"
-cd $final_path; npm ci
+cd $final_path; ynh_npm ci
+
+ynh_node_path=$ynh_node
 
 #=================================================
 # CREATE DATA DIRECTORY
@@ -158,6 +162,13 @@ chown -R $app:www-data "$datadir"
 # CREATE ARCHIVEBOX CONFIG
 #=================================================
 
+# copy configuration file
+ynh_add_config --template="../conf/ArchiveBox.conf" --destination="$datadir/ArchiveBox.conf"
+
+# permissions
+chmod 750 "$datadir"
+chmod -R o-rwx "$datadir"
+chown -R $app:www-data "$datadir"
 
 #=================================================
 # INITIALIZE ARCHIVEBOX
@@ -200,13 +211,7 @@ EOF
 fi
 
 ynh_script_progression --message="Finishing Archivebox Setup"  --weight=1
-cd $datadir && ynh_exec_as $app $archivebox_cmd init --setup
-
-#=================================================
-# ADD A CONFIGURATION
-#=================================================
-# config files for archive box live in $data_dir/ArchiveBox.conf
-# and are handled manually outside of YunoHost
+cd $datadir && ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
 
 #=================================================
 # SETUP SYSTEMD
