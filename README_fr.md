@@ -13,7 +13,7 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne
 
-**Version incluse :** 0.6.2~ynh8
+**Version incluse :** 0.6.2~ynh9
 
 **Démo :** https://archiveboxdemo.commoninternet.net
 
