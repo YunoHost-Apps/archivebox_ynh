@@ -15,7 +15,6 @@ source /usr/share/yunohost/helpers
 #=================================================
 
 ynh_clean_setup () {
-	#### Remove this function if there's nothing to clean before calling the remove script.
 	true
 }
 # Exit if an error occurs during the execution of the script
@@ -120,10 +119,8 @@ yunohost service add $app --description="Self-hosted internet archiving" --log="
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Ensuring systemd log folder is restored..." --weight=1
-mkdir -p /var/log/$app
-
 ynh_script_progression --message="Starting a systemd service..." --weight=1
+
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
 #=================================================
