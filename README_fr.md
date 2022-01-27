@@ -11,7 +11,8 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 ## Vue d'ensemble
 
-Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne
+Archiving solution to collect, save, and view sites you want to preserve offline
+
 
 **Version incluse :** 0.6.2~ynh9
 
@@ -26,8 +27,7 @@ Solution d'archivage pour collecter, enregistrer et afficher les sites que vous 
 * Any known limitations, constrains or stuff not working:
     * required to be run at the base path / , subpaths not yet supported
     * currently only tested on amd64
-    * haven't yet implemented single-sign or LDAP integration 
-
+    * haven't yet implemented single-sign or LDAP integration
 
 ## Documentations et ressources
 
