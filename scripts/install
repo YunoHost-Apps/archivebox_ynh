@@ -14,7 +14,6 @@ source /usr/share/yunohost/helpers
 #=================================================
 
 ynh_clean_setup () {
-	### Remove this function if there's nothing to clean before calling the remove script.
 	true
 }
 # Exit if an error occurs during the execution of the script
@@ -137,9 +136,13 @@ archivebox_cmd="$final_path/venv/bin/archivebox"
 #=================================================
 # INSTALL NODE DEPENDENCIES
 #=================================================
+ynh_script_progression --message="Install node dependencies..."
+
 cp ../conf/package.json "$final_path/package.json"
 cp ../conf/package-lock.json "$final_path/package-lock.json"
-cd $final_path; ynh_npm ci
+pushd $final_path
+	ynh_npm ci
+popd
 
 ynh_node_path=$ynh_node
 
@@ -153,7 +156,6 @@ ynh_app_setting_set --app=$app --key=datadir --value=$datadir
 
 mkdir -p $datadir
 
-# permissions
 chmod 750 "$datadir"
 chmod -R o-rwx "$datadir"
 chown -R $app:www-data "$datadir"
@@ -183,7 +185,7 @@ ynh_script_progression --message="Found users: $USER_EXISTS"  --weight=1
 
 if [ $USER_EXISTS -eq 1 ]
 then
-    ynh_script_progression --message="User already exists: setting admin password"  --weight=1
+	ynh_script_progression --message="User already exists: setting admin password"  --weight=1
 ynh_exec_as $app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
@@ -196,8 +198,8 @@ send -- "$password\r"
 expect eof
 EOF
 else
-    ynh_script_progression --message="Creating new archivebox superuser: $admin"  --weight=1
-    ynh_exec_as $app /usr/bin/expect<<EOF
+	ynh_script_progression --message="Creating new archivebox superuser: $admin"  --weight=1
+	ynh_exec_as $app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
 spawn sh -c "cd $datadir && $archivebox_cmd manage createsuperuser --username $admin --email $admin_mail"
