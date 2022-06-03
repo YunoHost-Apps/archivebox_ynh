@@ -5,7 +5,7 @@ It shall NOT be edited by hand.
 
 # ArchiveBox for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/archivebox.svg)](https://dash.yunohost.org/appci/app/archivebox) ![](https://ci-apps.yunohost.org/ci/badges/archivebox.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/archivebox.maintain.svg)  
+[![Integration level](https://dash.yunohost.org/integration/archivebox.svg)](https://dash.yunohost.org/appci/app/archivebox) ![Working status](https://ci-apps.yunohost.org/ci/badges/archivebox.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/archivebox.maintain.svg)  
 [![Install ArchiveBox with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=archivebox)
 
 *[Lire ce readme en français.](./README_fr.md)*
@@ -24,7 +24,7 @@ Archiving solution to collect, save, and view sites you want to preserve offline
 
 ## Screenshots
 
-![](./doc/screenshots/screenshot_archivebox1.png)
+![Screenshot of ArchiveBox](./doc/screenshots/screenshot_archivebox1.png)
 
 ## Disclaimers / important information
 
@@ -35,21 +35,22 @@ Archiving solution to collect, save, and view sites you want to preserve offline
 
 ## Documentation and resources
 
-* Official app website: https://archivebox.io/
-* Official admin documentation: https://github.com/ArchiveBox/ArchiveBox/wiki
-* Upstream app code repository: https://github.com/ArchiveBox/ArchiveBox
-* YunoHost documentation for this app: https://yunohost.org/app_archivebox
-* Report a bug: https://github.com/YunoHost-Apps/archivebox_ynh/issues
+* Official app website: <https://archivebox.io/>
+* Official admin documentation: <https://github.com/ArchiveBox/ArchiveBox/wiki>
+* Upstream app code repository: <https://github.com/ArchiveBox/ArchiveBox>
+* YunoHost documentation for this app: <https://yunohost.org/app_archivebox>
+* Report a bug: <https://github.com/YunoHost-Apps/archivebox_ynh/issues>
 
 ## Developer info
 
 Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/archivebox_ynh/tree/testing).
 
 To try the testing branch, please proceed like that.
-```
+
+``` bash
 sudo yunohost app install https://github.com/YunoHost-Apps/archivebox_ynh/tree/testing --debug
 or
 sudo yunohost app upgrade archivebox -u https://github.com/YunoHost-Apps/archivebox_ynh/tree/testing --debug
 ```
 
-**More info regarding app packaging:** https://yunohost.org/packaging_apps
+**More info regarding app packaging:** <https://yunohost.org/packaging_apps>
