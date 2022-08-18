@@ -6,7 +6,7 @@
         "en": "Archiving solution to collect, save, and view sites you want to preserve offline",
         "fr": "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
     },
-    "version": "0.6.2~ynh9",
+    "version": "0.6.2~ynh10",
     "url": "https://archivebox.io/",
     "upstream": {
         "license": "MIT",
