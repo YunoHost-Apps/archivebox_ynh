@@ -99,10 +99,10 @@ ynh_add_nginx_config
 # UPGRADE VIA PIP
 #=================================================
 
-ynh_use_nodejs
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading via pip" --weight=1
+    ynh_use_nodejs
     python3 -m venv "${final_path}/venv"
     cp ../conf/requirements.txt "$final_path/requirements.txt"
     chown -R "$app" "$final_path"
@@ -121,7 +121,9 @@ then
 
     # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
     ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
-    cd $datadir && ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
+    pushd $datadir
+    	ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
+    popd
 fi
 
 chmod 750 "$final_path"
