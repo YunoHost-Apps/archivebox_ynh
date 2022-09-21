@@ -66,8 +66,8 @@
                     "fr": "Le mot de passe utilisé pour se connecter en tant qu'administrateur pour cette application"
                 },
                 "help": {
-                    "en": "Choose wizely a password different from the username.",
-                    "fr": "Choisissez judicieusement un mot de passe différent du nom d'utilisateur."
+                    "en": "Choose wisely a password that is different from the username and does not contain the `$` symbol.",
+                    "fr": "Choisissez judicieusement un mot de passe différent du nom d'utilisateur et ne contenant pas le symbole `$`."
                 }
             }
         ]
