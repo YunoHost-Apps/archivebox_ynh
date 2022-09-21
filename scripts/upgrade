@@ -159,7 +159,7 @@ ynh_script_progression --message="Updating a configuration file..." --weight=1
 
 ynh_add_config --template="../conf/ArchiveBox.conf" --destination="$datadir/ArchiveBox.conf"
 
-chmod 400 "$datadir/ArchiveBox.conf"
+chmod 600 "$datadir/ArchiveBox.conf"
 chown $app:$app "$datadir/ArchiveBox.conf"
 
 #=================================================
