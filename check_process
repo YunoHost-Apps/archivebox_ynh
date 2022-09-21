@@ -2,9 +2,9 @@
 	; Manifest
 		domain="domain.tld"
 		path="/path"
-		admin="john"
-		language="fr"
 		is_public=1
+		language="fr"
+		admin="john"
 		password="1Strong-Password"
 		port="666"
 	; Checks
@@ -24,6 +24,3 @@
 ;;; Options
 Email=
 Notification=none
-;;; Upgrade options
-	; commit=a2d626f966bc358aea53bbe78d9fa2a0e3783c78
-		name=0.6.2~ynh9
