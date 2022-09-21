@@ -78,6 +78,22 @@ ynh_script_progression --message="Making sure dedicated system user exists..." -
 ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+
+if [ "$upgrade_type" == "UPGRADE_APP" ]
+then
+	ynh_script_progression --message="Upgrading source files..." --weight=1
+
+	# Download, check integrity, uncompress and patch the source from app.src
+	mkdir -p $final_path
+fi
+
+chmod 750 "$final_path"
+chmod -R o-rwx "$final_path"
+chown -R $app:www-data "$final_path"
+
+#=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..." --weight=1
@@ -118,17 +134,46 @@ then
 
     # we use this virtualenv archivebox for further commands now
     archivebox_cmd="$final_path/venv/bin/archivebox"
+fi
 
+#=================================================
+# UPGRADE NODE DEPENDENCIES
+#=================================================
+
+if [ "$upgrade_type" == "UPGRADE_APP" ]
+then
+	ynh_script_progression --message="Upgrading node dependencies..."
+	
+	cp -f ../conf/package.json "$final_path/package.json"
+	cp -f ../conf/package-lock.json "$final_path/package-lock.json"
+	pushd $final_path
+		ynh_use_nodejs
+		ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm ci
+	popd
+fi
+
+#=================================================
+# UPDATE A CONFIG FILE
+#=================================================
+ynh_script_progression --message="Updating a configuration file..." --weight=1
+
+ynh_add_config --template="../conf/ArchiveBox.conf" --destination="$datadir/ArchiveBox.conf"
+
+chmod 400 "$datadir/ArchiveBox.conf"
+chown $app:$app "$datadir/ArchiveBox.conf"
+
+#=================================================
+# FINISH ARCHIVEBOX SETUP
+#=================================================
+
+if [ "$upgrade_type" == "UPGRADE_APP" ]
+then
     # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
     ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
     pushd $datadir
     	ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
     popd
 fi
-
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
 
 #=================================================
 # SETUP SYSTEMD

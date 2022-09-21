@@ -111,7 +111,7 @@ ynh_add_nginx_config
 #=================================================
 # PIP INSTALLATION
 #=================================================
-ynh_script_progression --message="Install project via pip..." --weight=80
+ynh_script_progression --message="Installing project via pip..." --weight=80
 
 python3 -m venv "${final_path}/venv"
 cp ../conf/requirements.txt "$final_path/requirements.txt"
@@ -134,13 +134,13 @@ archivebox_cmd="$final_path/venv/bin/archivebox"
 #=================================================
 # INSTALL NODE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Install node dependencies..."
+ynh_script_progression --message="Installing node dependencies..."
 
-ynh_use_nodejs
 cp ../conf/package.json "$final_path/package.json"
 cp ../conf/package-lock.json "$final_path/package-lock.json"
 pushd $final_path
-	ynh_npm ci
+	ynh_use_nodejs
+	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm ci
 popd
 
 #=================================================
@@ -164,10 +164,8 @@ ynh_script_progression --message="Adding a configuration file..." --weight=1
 
 ynh_add_config --template="../conf/ArchiveBox.conf" --destination="$datadir/ArchiveBox.conf"
 
-# permissions
-chmod 750 "$datadir"
-chmod -R o-rwx "$datadir"
-chown -R $app:www-data "$datadir"
+chmod 400 "$datadir/ArchiveBox.conf"
+chown $app:$app "$datadir/ArchiveBox.conf"
 
 #=================================================
 # INITIALIZE ARCHIVEBOX
