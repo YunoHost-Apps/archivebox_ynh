@@ -74,8 +74,8 @@ ynh_app_setting_set --app=$app --key=port --value=$port
 #=================================================
 ynh_script_progression --message="Installing dependencies..." --weight=8
 
-ynh_install_app_dependencies $pkg_dependencies
-ynh_install_nodejs --nodejs_version=$nodejs_version
+ynh_exec_warn_less ynh_install_app_dependencies $pkg_dependencies
+ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
 
 #=================================================
 # CREATE DEDICATED USER
@@ -174,10 +174,10 @@ chown $app:$app "$datadir/ArchiveBox.conf"
 ynh_script_progression --message="Initializing Archivebox" --weight=1
 
 pushd $datadir
-	ynh_exec_as $app $archivebox_cmd init
+	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init
 
 	ynh_script_progression --message="Checking if admin superuser already exists: $admin" --weight=1
-	USER_EXISTS=$(ynh_exec_as $app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
+	ynh_exec_warn_less USER_EXISTS=$(ynh_exec_as $app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
 	ynh_script_progression --message="Found users: $USER_EXISTS" --weight=1
 
 	if [ $USER_EXISTS -eq 1 ]
@@ -210,7 +210,7 @@ EOF
 	fi
 
 	ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
-	ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
+	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
 popd
 
 #=================================================

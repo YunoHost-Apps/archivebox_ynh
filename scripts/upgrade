@@ -100,8 +100,8 @@ chown -R $app:www-data "$final_path"
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..." --weight=1
 
-ynh_install_app_dependencies $pkg_dependencies
-ynh_install_nodejs --nodejs_version=$nodejs_version
+ynh_exec_warn_less ynh_install_app_dependencies $pkg_dependencies
+ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
 
 #=================================================
 # NGINX CONFIGURATION
@@ -160,6 +160,7 @@ fi
 #=================================================
 ynh_script_progression --message="Updating a configuration file..." --weight=1
 
+ynh_store_file_checksum --file="$datadir/ArchiveBox.conf"
 ynh_add_config --template="../conf/ArchiveBox.conf" --destination="$datadir/ArchiveBox.conf"
 
 chmod 600 "$datadir/ArchiveBox.conf"
@@ -174,7 +175,7 @@ then
     # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
     ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
     pushd $datadir
-    	ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
+    	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
     popd
 fi
 
