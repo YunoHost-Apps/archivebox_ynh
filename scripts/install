@@ -92,6 +92,8 @@ ynh_script_progression --message="Setting up source files..." --weight=1
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
+tempdir="$(mktemp -d)"
+ynh_setup_source --dest_dir="$tempdir"
 mkdir -p $final_path
 
 chmod 750 "$final_path"
@@ -115,8 +117,6 @@ ynh_script_progression --message="Installing project via pip..." --weight=80
 
 python3 -m venv "${final_path}/venv"
 cp ../conf/requirements.txt "$final_path/requirements.txt"
-ynh_add_config --template="../conf/start.sh" --destination="$final_path/start.sh"
-chmod 760 "$final_path/start.sh"
 chown -R "$app" "$final_path"
 
 #run source in a 'sub shell'
@@ -136,8 +136,9 @@ archivebox_cmd="$final_path/venv/bin/archivebox"
 #=================================================
 ynh_script_progression --message="Installing node dependencies..."
 
-cp ../conf/package.json "$final_path/package.json"
-cp ../conf/package-lock.json "$final_path/package-lock.json"
+cp -f $tempdir/package.json "$final_path/package.json"
+cp -f $tempdir/package-lock.json "$final_path/package-lock.json"
+ynh_secure_remove --file="$tempdir"
 pushd $final_path
 	ynh_use_nodejs
 	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm ci

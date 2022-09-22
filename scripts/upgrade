@@ -86,6 +86,8 @@ then
 	ynh_script_progression --message="Upgrading source files..." --weight=1
 
 	# Download, check integrity, uncompress and patch the source from app.src
+	tempdir="$(mktemp -d)"
+	ynh_setup_source --dest_dir="$tempdir"
 	mkdir -p $final_path
 fi
 
@@ -144,8 +146,9 @@ if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading node dependencies..."
 	
-	cp -f ../conf/package.json "$final_path/package.json"
-	cp -f ../conf/package-lock.json "$final_path/package-lock.json"
+	cp -f $tempdir/package.json "$final_path/package.json"
+	cp -f $tempdir/package-lock.json "$final_path/package-lock.json"
+	ynh_secure_remove --file="$tempdir"
 	pushd $final_path
 		ynh_use_nodejs
 		ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm ci
