@@ -61,10 +61,6 @@
             {
                 "name": "password",
                 "type": "password",
-                "ask": {
-                    "en": "The password used to login as an admin for this app",
-                    "fr": "Le mot de passe utilisé pour se connecter en tant qu'administrateur pour cette application"
-                },
                 "help": {
                     "en": "Choose wisely a password that is different from the username and does not contain the `$` symbol.",
                     "fr": "Choisissez judicieusement un mot de passe différent du nom d'utilisateur et ne contenant pas le symbole `$`."
