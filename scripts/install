@@ -177,7 +177,7 @@ pushd $datadir
 	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init
 
 	ynh_script_progression --message="Checking if admin superuser already exists: $admin" --weight=1
-	ynh_exec_warn_less USER_EXISTS=$(ynh_exec_as $app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
+	USER_EXISTS=$(ynh_exec_as $app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
 	ynh_script_progression --message="Found users: $USER_EXISTS" --weight=1
 
 	if [ $USER_EXISTS -eq 1 ]
