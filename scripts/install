@@ -28,19 +28,19 @@ domain=$YNH_APP_ARG_DOMAIN
 # we can only add support for subpaths once this is resolved in archivebox
 # https://github.com/ArchiveBox/ArchiveBox/issues/724
 path_url="/"
-admin=$YNH_APP_ARG_ADMIN
 is_public=$YNH_APP_ARG_IS_PUBLIC
 language=$YNH_APP_ARG_LANGUAGE
+admin=$YNH_APP_ARG_ADMIN
 password=$YNH_APP_ARG_PASSWORD
 
-admin_mail=$(ynh_user_get_info $admin 'mail')
-
 app=$YNH_APP_INSTANCE_NAME
+
+admin_mail=$(ynh_user_get_info $admin 'mail')
 
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
-ynh_script_progression --message="Validating installation parameters..."  --weight=1
+ynh_script_progression --message="Validating installation parameters..." --weight=1
 
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
@@ -51,12 +51,12 @@ ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
-ynh_script_progression --message="Storing installation settings..."  --weight=1
+ynh_script_progression --message="Storing installation settings..." --weight=1
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
-ynh_app_setting_set --app=$app --key=admin --value=$admin
 ynh_app_setting_set --app=$app --key=language --value=$language
+ynh_app_setting_set --app=$app --key=admin --value=$admin
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -74,9 +74,8 @@ ynh_app_setting_set --app=$app --key=port --value=$port
 #=================================================
 ynh_script_progression --message="Installing dependencies..." --weight=8
 
-ynh_install_app_dependencies $pkg_dependencies
-
-ynh_install_nodejs --nodejs_version=$nodejs_version
+ynh_exec_warn_less ynh_install_app_dependencies $pkg_dependencies
+ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
 
 #=================================================
 # CREATE DEDICATED USER
@@ -87,13 +86,14 @@ ynh_script_progression --message="Configuring system user..." --weight=1
 ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
-# CREATE FINAL_PATH FOLDER
+# DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..."  --weight=1
+ynh_script_progression --message="Setting up source files..." --weight=1
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
-#ynh_setup_source --dest_dir="$final_path"
+tempdir="$(mktemp -d)"
+ynh_setup_source --dest_dir="$tempdir"
 mkdir -p $final_path
 
 chmod 750 "$final_path"
@@ -103,7 +103,7 @@ chown -R $app:www-data "$final_path"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring NGINX web server..."  --weight=1
+ynh_script_progression --message="Configuring NGINX web server..." --weight=1
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
@@ -113,12 +113,10 @@ ynh_add_nginx_config
 #=================================================
 # PIP INSTALLATION
 #=================================================
-ynh_script_progression --message="Install project via pip..." --weight=80
+ynh_script_progression --message="Installing project via pip..." --weight=80
 
 python3 -m venv "${final_path}/venv"
 cp ../conf/requirements.txt "$final_path/requirements.txt"
-ynh_add_config --template="../conf/start.sh" --destination="$final_path/start.sh"
-chmod 760 "$final_path/start.sh"
 chown -R "$app" "$final_path"
 
 #run source in a 'sub shell'
@@ -136,15 +134,15 @@ archivebox_cmd="$final_path/venv/bin/archivebox"
 #=================================================
 # INSTALL NODE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Install node dependencies..."
+ynh_script_progression --message="Installing node dependencies..."
 
-cp ../conf/package.json "$final_path/package.json"
-cp ../conf/package-lock.json "$final_path/package-lock.json"
+cp -f $tempdir/package.json "$final_path/package.json"
+cp -f $tempdir/package-lock.json "$final_path/package-lock.json"
+ynh_secure_remove --file="$tempdir"
 pushd $final_path
-	ynh_npm ci
+	ynh_use_nodejs
+	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm ci
 popd
-
-ynh_node_path=$ynh_node
 
 #=================================================
 # CREATE DATA DIRECTORY
@@ -161,32 +159,31 @@ chmod -R o-rwx "$datadir"
 chown -R $app:www-data "$datadir"
 
 #=================================================
-# CREATE ARCHIVEBOX CONFIG
+# ADD A CONFIGURATION
 #=================================================
+ynh_script_progression --message="Adding a configuration file..." --weight=1
 
-# copy configuration file
 ynh_add_config --template="../conf/ArchiveBox.conf" --destination="$datadir/ArchiveBox.conf"
 
-# permissions
-chmod 750 "$datadir"
-chmod -R o-rwx "$datadir"
-chown -R $app:www-data "$datadir"
+chmod 600 "$datadir/ArchiveBox.conf"
+chown $app:$app "$datadir/ArchiveBox.conf"
 
 #=================================================
 # INITIALIZE ARCHIVEBOX
 #=================================================
 ynh_script_progression --message="Initializing Archivebox" --weight=1
 
-cd $datadir && ynh_exec_as $app $archivebox_cmd init
+pushd $datadir
+	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init
 
-ynh_script_progression --message="Checking if admin superuser already exists: $admin"  --weight=1
-USER_EXISTS=$(cd $datadir && ynh_exec_as $app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
-ynh_script_progression --message="Found users: $USER_EXISTS"  --weight=1
+	ynh_script_progression --message="Checking if admin superuser already exists: $admin" --weight=1
+	USER_EXISTS=$(ynh_exec_as $app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
+	ynh_script_progression --message="Found users: $USER_EXISTS" --weight=1
 
-if [ $USER_EXISTS -eq 1 ]
-then
-	ynh_script_progression --message="User already exists: setting admin password"  --weight=1
-ynh_exec_as $app /usr/bin/expect<<EOF
+	if [ $USER_EXISTS -eq 1 ]
+	then
+		ynh_script_progression --message="User already exists: setting admin password" --weight=1
+		ynh_exec_as $app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
 spawn sh -c "cd $datadir && $archivebox_cmd manage changepassword $admin"
@@ -197,9 +194,9 @@ expect "*?assword (again): "
 send -- "$password\r"
 expect eof
 EOF
-else
-	ynh_script_progression --message="Creating new archivebox superuser: $admin"  --weight=1
-	ynh_exec_as $app /usr/bin/expect<<EOF
+	else
+		ynh_script_progression --message="Creating new archivebox superuser: $admin" --weight=1
+		ynh_exec_as $app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
 spawn sh -c "cd $datadir && $archivebox_cmd manage createsuperuser --username $admin --email $admin_mail"
@@ -210,10 +207,11 @@ expect "*?assword (again): "
 send -- "$password\r"
 expect eof
 EOF
-fi
+	fi
 
-ynh_script_progression --message="Finishing Archivebox Setup"  --weight=1
-cd $datadir && ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
+	ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
+	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
+popd
 
 #=================================================
 # SETUP SYSTEMD
