@@ -20,7 +20,6 @@ Archiving solution to collect, save, and view sites you want to preserve offline
 
 **Shipped version:** 0.6.2~ynh11
 
-
 **Demo:** https://archiveboxdemo.commoninternet.net
 
 ## Screenshots
