@@ -6,7 +6,7 @@
         "en": "Archiving solution to collect, save, and view sites you want to preserve offline",
         "fr": "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
     },
-    "version": "0.6.2~ynh10",
+    "version": "0.6.2~ynh11",
     "url": "https://archivebox.io/",
     "upstream": {
         "license": "MIT",
@@ -34,10 +34,6 @@
                 "type": "domain"
             },
             {
-                "name": "admin",
-                "type": "user"
-            },
-            {
                 "name": "is_public",
                 "type": "boolean",
                 "default": true,
@@ -52,15 +48,22 @@
                     "en": "Choose the application language",
                     "fr": "Choisissez la langue de l'application"
                 },
-                "choices": ["fr", "en"],
+                "choices": [
+                    "fr",
+                    "en"
+                ],
                 "default": "fr"
+            },
+            {
+                "name": "admin",
+                "type": "user"
             },
             {
                 "name": "password",
                 "type": "password",
                 "help": {
-                    "en": "The password used to login as an admin for this app",
-                    "fr": "Le mot de passe utilisé pour se connecter en tant qu'administrateur pour cette application"
+                    "en": "Choose wisely a password that is different from the username and does not contain the `$` symbol.",
+                    "fr": "Choisissez judicieusement un mot de passe différent du nom d'utilisateur et ne contenant pas le symbole `$`."
                 }
             }
         ]

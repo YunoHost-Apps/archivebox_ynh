@@ -7,7 +7,8 @@ Type=simple
 User=__APP__
 Group=__APP__
 WorkingDirectory=__DATADIR__/
-ExecStart=__FINALPATH__/start.sh
+Environment="__YNH_NODE_LOAD_PATH__"
+ExecStart=__FINALPATH__/venv/bin/archivebox server 127.0.0.1:__PORT__
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
 
