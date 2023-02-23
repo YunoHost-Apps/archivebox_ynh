@@ -5,15 +5,16 @@ It shall NOT be edited by hand.
 
 # ArchiveBox pour YunoHost
 
-[![Niveau d'intégration](https://dash.yunohost.org/integration/archivebox.svg)](https://dash.yunohost.org/appci/app/archivebox) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/archivebox.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/archivebox.maintain.svg)  
+[![Niveau d’intégration](https://dash.yunohost.org/integration/archivebox.svg)](https://dash.yunohost.org/appci/app/archivebox) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/archivebox.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/archivebox.maintain.svg)
+
 [![Installer ArchiveBox avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=archivebox)
 
 *[Read this readme in english.](./README.md)*
 
-> *Ce package vous permet d'installer ArchiveBox rapidement et simplement sur un serveur YunoHost.
-Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
+> *Ce package vous permet d’installer ArchiveBox rapidement et simplement sur un serveur YunoHost.
+Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l’installer et en profiter.*
 
-## Vue d'ensemble
+## Vue d’ensemble
 
 Archiving solution to collect, save, and view sites you want to preserve offline
 
@@ -22,9 +23,9 @@ Archiving solution to collect, save, and view sites you want to preserve offline
 
 **Démo :** https://archiveboxdemo.commoninternet.net
 
-## Captures d'écran
+## Captures d’écran
 
-![Capture d'écran de ArchiveBox](./doc/screenshots/screenshot_archivebox1.png)
+![Capture d’écran de ArchiveBox](./doc/screenshots/screenshot_archivebox1.png)
 
 ## Avertissements / informations importantes
 
@@ -37,9 +38,9 @@ Archiving solution to collect, save, and view sites you want to preserve offline
 
 ## Documentations et ressources
 
-* Site officiel de l'app : <https://archivebox.io/>
-* Documentation officielle de l'admin : <https://github.com/ArchiveBox/ArchiveBox/wiki>
-* Dépôt de code officiel de l'app : <https://github.com/ArchiveBox/ArchiveBox>
+* Site officiel de l’app : <https://archivebox.io/>
+* Documentation officielle de l’admin : <https://github.com/ArchiveBox/ArchiveBox/wiki>
+* Dépôt de code officiel de l’app : <https://github.com/ArchiveBox/ArchiveBox>
 * Documentation YunoHost pour cette app : <https://yunohost.org/app_archivebox>
 * Signaler un bug : <https://github.com/YunoHost-Apps/archivebox_ynh/issues>
 
@@ -55,4 +56,4 @@ ou
 sudo yunohost app upgrade archivebox -u https://github.com/YunoHost-Apps/archivebox_ynh/tree/testing --debug
 ```
 
-**Plus d'infos sur le packaging d'applications :** <https://yunohost.org/packaging_apps>
+**Plus d’infos sur le packaging d’applications :** <https://yunohost.org/packaging_apps>
