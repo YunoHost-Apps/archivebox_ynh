@@ -1,0 +1,72 @@
+packaging_format = 2
+
+id = "archivebox"
+name = "ArchiveBox"
+description.en = "Archiving solution to collect, save, and view sites you want to preserve offline"
+description.fr = "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
+
+version = "0.6.2~ynh11"
+
+maintainers = ["Max Fowler"]
+
+[upstream]
+license = "MIT"
+website = "https://archivebox.io/"
+demo = "https://archiveboxdemo.commoninternet.net"
+admindoc = "https://github.com/ArchiveBox/ArchiveBox/wiki"
+code = "https://github.com/ArchiveBox/ArchiveBox"
+cpe = "???" # FIXME: optional but recommended if relevant, this is meant to contain the Common Platform Enumeration, which is sort of a standard id for applications defined by the NIST. In particular, Yunohost may use this is in the future to easily track CVE (=security reports) related to apps. The CPE may be obtained by searching here: https://nvd.nist.gov/products/cpe/search. For example, for Nextcloud, the CPE is 'cpe:2.3:a:nextcloud:nextcloud' (no need to include the version number)
+fund = "???" # FIXME: optional but recommended (or remove if irrelevant / not applicable). This is meant to be an URL where people can financially support this app, especially when its development is based on volunteers and/or financed by its community. YunoHost may later advertise it in the webadmin.
+
+[integration]
+yunohost = ">= 4.3.0"
+architectures = "all" # FIXME: can be replaced by a list of supported archs using the dpkg --print-architecture nomenclature (amd64/i386/armhf/arm64), for example: ["amd64", "i386"]
+multi_instance = true
+ldap = "?" # FIXME: replace with true, false, or "not_relevant". Not to confuse with the "sso" key : the "ldap" key corresponds to wether or not a user *can* login on the app using its YunoHost credentials.
+sso = "?" # FIXME: replace with true, false, or "not_relevant". Not to confuse with the "ldap" key : the "sso" key corresponds to wether or not a user is *automatically logged-in* on the app when logged-in on the YunoHost portal.
+disk = "50M" # FIXME: replace with an **estimate** minimum disk requirement. e.g. 20M, 400M, 1G, ...
+ram.build = "50M" # FIXME: replace with an **estimate** minimum ram requirement. e.g. 50M, 400M, 1G, ...
+ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requirement. e.g. 50M, 400M, 1G, ...
+
+[install]
+    [install.domain]
+    # this is a generic question - ask strings are automatically handled by Yunohost's core
+    type = "domain"
+    full_domain = true
+
+    [install.init_main_permission]
+    help.en = "If true, saved archives will be viewable without logging in."
+    type = "group"
+    default = "visitors"
+
+    [install.language]
+    ask.en = "Choose the application language"
+    ask.fr = "Choisissez la langue de l'application"
+    type = "string"
+    choices = ["fr", "en"]
+    default = "fr"
+
+    [install.admin]
+    # this is a generic question - ask strings are automatically handled by Yunohost's core
+    type = "user"
+
+    [install.password]
+    # this is a generic question - ask strings are automatically handled by Yunohost's core
+    help.en = "Choose wisely a password that is different from the username and does not contain the `$` symbol."
+    help.fr = "Choisissez judicieusement un mot de passe différent du nom d'utilisateur et ne contenant pas le symbole `$`."
+    type = "password"
+
+[resources]
+        [resources.sources.main]
+        url = "https://github.com/ArchiveBox/ArchiveBox/archive/refs/tags/v0.6.2.tar.gz"
+        sha256 = "53a6dd88d2a7c1510bccd172e7b89689a722acbdcc843d46d7f37efba8c7369d"
+
+
+    [resources.system_user]
+
+    [resources.install_dir]
+
+    [resources.data_dir]
+
+    [resources.permissions]
+    main.url = "/"
