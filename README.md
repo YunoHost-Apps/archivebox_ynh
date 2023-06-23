@@ -19,22 +19,13 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 Archiving solution to collect, save, and view sites you want to preserve offline
 
 
-**Shipped version:** 0.6.2~ynh11
+**Shipped version:** 0.7.0~ynh1
 
 **Demo:** https://archiveboxdemo.commoninternet.net
 
 ## Screenshots
 
 ![Screenshot of ArchiveBox](./doc/screenshots/screenshot_archivebox1.png)
-
-## Disclaimers / important information
-
-* Any known limitations, constrains or stuff not working:
-    * required to be run at the base path / , subpaths not yet supported
-    * currently only tested on amd64
-    * haven't yet implemented single-sign or LDAP integration
-    * require a SSE3 instructions
-    * will install chromium as requirement
 
 ## Documentation and resources
 
