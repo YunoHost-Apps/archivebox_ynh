@@ -19,7 +19,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 Archiving solution to collect, save, and view sites you want to preserve offline
 
 
-**Shipped version:** 0.7.0~ynh1
+**Shipped version:** 0.6.2~ynh1
 
 **Demo:** https://archiveboxdemo.commoninternet.net
 
