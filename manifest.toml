@@ -17,7 +17,7 @@ admindoc = "https://github.com/ArchiveBox/ArchiveBox/wiki"
 code = "https://github.com/ArchiveBox/ArchiveBox"
 
 [integration]
-yunohost = ">= 11.1.21"
+yunohost = ">= 11.2"
 architectures = "all"
 multi_instance = true
 ldap = false
@@ -29,7 +29,6 @@ ram.runtime = "50M"
 [install]
     [install.domain]
     type = "domain"
-    full_domain = true
 
     [install.init_main_permission]
     help.en = "If true, saved archives will be viewable without logging in."
