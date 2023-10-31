@@ -32,7 +32,7 @@ Archiving solution to collect, save, and view sites you want to preserve offline
 * Site officiel de l’app : <https://archivebox.io/>
 * Documentation officielle de l’admin : <https://github.com/ArchiveBox/ArchiveBox/wiki>
 * Dépôt de code officiel de l’app : <https://github.com/ArchiveBox/ArchiveBox>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_archivebox>
+* YunoHost Store: <https://apps.yunohost.org/app/archivebox>
 * Signaler un bug : <https://github.com/YunoHost-Apps/archivebox_ynh/issues>
 
 ## Informations pour les développeurs
