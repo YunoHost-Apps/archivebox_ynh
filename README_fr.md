@@ -19,7 +19,7 @@ Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) po
 Archiving solution to collect, save, and view sites you want to preserve offline
 
 
-**Version incluse :** 0.6.2~ynh1
+**Version incluse :** 0.7.2~ynh1
 
 **Démo :** https://archiveboxdemo.commoninternet.net
 
