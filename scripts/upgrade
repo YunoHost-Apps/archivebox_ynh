@@ -34,7 +34,7 @@ then
 
 	# Download, check integrity, uncompress and patch the source from app.src
 	tempdir="$(mktemp -d)"
-	ynh_setup_source --dest_dir="$tempdir"
+	ynh_setup_source --dest_dir="$tempdir" --full_replace=1
 	mkdir -p $install_dir
 fi
 
