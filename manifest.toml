@@ -5,7 +5,7 @@ name = "ArchiveBox"
 description.en = "Archiving solution to collect, save, and view sites you want to preserve offline"
 description.fr = "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
 
-version = "0.7.2~ynh1"
+version = "0.7.2~ynh2"
 
 maintainers = ["Max Fowler"]
 
@@ -46,7 +46,7 @@ ram.runtime = "50M"
     type = "user"
 
     [install.password]
-    help.en = "Choose wisely a password that is different from the username and does not contain the `$` symbol."
+    help.en = "Choose a password that is different from the username and does not contain the `$` symbol."
     help.fr = "Choisissez judicieusement un mot de passe différent du nom d'utilisateur et ne contenant pas le symbole `$`."
     type = "password"
 
