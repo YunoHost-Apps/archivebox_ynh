@@ -9,4 +9,4 @@ replace "version"
 
 ## 2. Modify conf/requirements.txt
 requirements.txt contains a single line, which correlates to the archivebox upstream pip install script;
-e.g. in requirements.txt `archivebox==0.7.2;` `from pip install --upgrade 'archivebox==0.7.2'`
+e.g. in requirements.txt `archivebox==0.7.2;` from `pip install --upgrade 'archivebox==0.7.2'`
