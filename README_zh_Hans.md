@@ -16,7 +16,7 @@
 
 ## 概况
 
-Archiving solution to collect, save, and view sites you want to preserve offline
+Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
 **分发版本：** 0.7.2~ynh1

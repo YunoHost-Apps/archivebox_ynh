@@ -16,7 +16,7 @@ It shall NOT be edited by hand.
 
 ## Overview
 
-Archiving solution to collect, save, and view sites you want to preserve offline
+Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
 **Shipped version:** 0.7.2~ynh1

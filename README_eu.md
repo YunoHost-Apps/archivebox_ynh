@@ -16,7 +16,7 @@ EZ editatu eskuz.
 
 ## Aurreikuspena
 
-Archiving solution to collect, save, and view sites you want to preserve offline
+Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
 **Paketatutako bertsioa:** 0.7.2~ynh1
