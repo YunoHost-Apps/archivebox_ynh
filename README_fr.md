@@ -16,7 +16,7 @@ Il NE doit PAS être modifié à la main.
 
 ## Vue d’ensemble
 
-Archiving solution to collect, save, and view sites you want to preserve offline
+Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
 **Version incluse :** 0.7.2~ynh1
