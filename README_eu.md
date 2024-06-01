@@ -19,7 +19,7 @@ EZ editatu eskuz.
 Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
-**Paketatutako bertsioa:** 0.7.2~ynh1
+**Paketatutako bertsioa:** 0.7.2~ynh2
 
 **Demoa:** <https://archiveboxdemo.commoninternet.net>
 

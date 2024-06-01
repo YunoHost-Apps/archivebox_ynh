@@ -19,7 +19,7 @@
 Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
-**分发版本：** 0.7.2~ynh1
+**分发版本：** 0.7.2~ynh2
 
 **演示：** <https://archiveboxdemo.commoninternet.net>
 

@@ -19,7 +19,7 @@ NON debe editarse manualmente.
 Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
-**Versión proporcionada:** 0.7.2~ynh1
+**Versión proporcionada:** 0.7.2~ynh2
 
 **Demo:** <https://archiveboxdemo.commoninternet.net>
 
