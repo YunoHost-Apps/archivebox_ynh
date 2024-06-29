@@ -5,7 +5,7 @@ name = "ArchiveBox"
 description.en = "Archiving solution to collect, save, and view sites you want to preserve offline"
 description.fr = "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
 
-version = "0.7.2~ynh2"
+version = "0.7.2~ynh3"
 
 maintainers = ["Max Fowler"]
 
