@@ -5,7 +5,7 @@ No se debe editar a mano.
 
 # ArchiveBox para Yunohost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/archivebox.svg)](https://dash.yunohost.org/appci/app/archivebox) ![Estado funcional](https://ci-apps.yunohost.org/ci/badges/archivebox.status.svg) ![Estado En Mantención](https://ci-apps.yunohost.org/ci/badges/archivebox.maintain.svg)
+[![Nivel de integración](https://dash.yunohost.org/integration/archivebox.svg)](https://ci-apps.yunohost.org/ci/apps/archivebox/) ![Estado funcional](https://ci-apps.yunohost.org/ci/badges/archivebox.status.svg) ![Estado En Mantención](https://ci-apps.yunohost.org/ci/badges/archivebox.maintain.svg)
 
 [![Instalar ArchiveBox con Yunhost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=archivebox)
 
@@ -19,7 +19,7 @@ No se debe editar a mano.
 Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
-**Versión actual:** 0.7.2~ynh2
+**Versión actual:** 0.7.2~ynh3
 
 **Demo:** <https://archiveboxdemo.commoninternet.net>
 
