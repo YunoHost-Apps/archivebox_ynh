@@ -30,8 +30,6 @@ ynh_remove_logrotate
 # Remove the dedicated NGINX config
 ynh_remove_nginx_config
 
-# Remove the log files
-
 #=================================================
 # END OF SCRIPT
 #=================================================
