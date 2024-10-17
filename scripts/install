@@ -42,7 +42,8 @@ cp ../conf/requirements.txt "$install_dir/requirements.txt"
 	source "${install_dir}/venv/bin/activate"
 	set -o nounset
 	ynh_exec_as_app $install_dir/venv/bin/pip install --upgrade pip
-	ynh_exec_as_app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
+	ynh_exec_as_app $install_dir/venv/bin/pip install archivebox==0.7.2
+	#ynh_exec_as_app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
 )
 
 # we use this virtualenv archivebox for further commands now
@@ -68,7 +69,7 @@ ynh_script_progression "Adding $app's configuration..."
 ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
 chmod 600 "$data_dir/ArchiveBox.conf"
-$app:$app "$data_dir/ArchiveBox.conf"
+chown $app:$app "$data_dir/ArchiveBox.conf"
 
 #=================================================
 # INITIALIZE ARCHIVEBOX
