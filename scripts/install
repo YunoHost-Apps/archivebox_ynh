@@ -21,15 +21,13 @@ ynh_nodejs_install
 #=================================================
 ynh_script_progression "Setting up source files..."
 
-# Download, check integrity, uncompress and patch the source from app.src
 tempdir="$(mktemp -d)"
 ynh_setup_source --dest_dir="$tempdir"
 mkdir -p $install_dir
 
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:www-data "$install_dir"
-#=================================================
-# SPECIFIC SETUP
+chmod -R o-rwx "$install_dir"
+chown -R $app:www-data "$install_dir"
+
 #=================================================
 # PIP INSTALLATION
 #=================================================
@@ -59,8 +57,7 @@ cp -f $tempdir/package.json "$install_dir/package.json"
 cp -f $tempdir/package-lock.json "$install_dir/package-lock.json"
 ynh_safe_rm "$tempdir"
 pushd $install_dir
-
-	ynh_hide_warnings ynh_exec_as_app node_load_PATH npm ci
+	ynh_hide_warnings ynh_exec_as_app npm ci
 popd
 
 #=================================================
@@ -70,8 +67,8 @@ ynh_script_progression "Adding $app's configuration..."
 
 ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
-#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 600 "$data_dir/ArchiveBox.conf"
-#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown $app:$app "$data_dir/ArchiveBox.conf"
+chmod 600 "$data_dir/ArchiveBox.conf"
+$app:$app "$data_dir/ArchiveBox.conf"
 
 #=================================================
 # INITIALIZE ARCHIVEBOX
@@ -79,9 +76,10 @@ ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.
 ynh_script_progression "Initializing $app"
 
 pushd $data_dir
-	ynh_hide_warnings ynh_exec_as_app node_load_PATH $archivebox_cmd init
+	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init
 
 	ynh_script_progression "Checking if admin superuser already exists: $admin"
+
 	USER_EXISTS=$(ynh_exec_as_app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
 	ynh_script_progression "Found users: $USER_EXISTS"
 
@@ -115,7 +113,8 @@ EOF
 	fi
 
 	ynh_script_progression "Finishing Archivebox Setup"
-	ynh_hide_warnings ynh_exec_as_app node_load_PATH $archivebox_cmd init --setup
+
+	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init --setup
 popd
 
 #=================================================
@@ -123,13 +122,10 @@ popd
 #=================================================
 ynh_script_progression "Adding system configurations related to $app..."
 
-# Create a dedicated NGINX config
 ynh_config_add_nginx
 
-# Create a dedicated systemd config
 ynh_config_add_systemd
 
-# Use logrotate to manage application logfile(s)
 ynh_config_add_logrotate
 
 yunohost service add $app --description="Self-hosted internet archiving" --log="/var/log/$app/$app.log"
@@ -139,7 +135,6 @@ yunohost service add $app --description="Self-hosted internet archiving" --log="
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-# Start a systemd service
 ynh_systemctl --service=$app --action="start"
 
 #=================================================
