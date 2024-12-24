@@ -57,6 +57,7 @@ ynh_script_progression "Installing node dependencies..."
 cp -f $tempdir/package.json "$install_dir/package.json"
 cp -f $tempdir/package-lock.json "$install_dir/package-lock.json"
 ynh_safe_rm "$tempdir"
+
 pushd $install_dir
 	ynh_hide_warnings ynh_exec_as_app npm ci
 popd
