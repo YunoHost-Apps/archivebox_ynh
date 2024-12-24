@@ -5,7 +5,7 @@ name = "ArchiveBox"
 description.en = "Archiving solution to collect, save, and view sites you want to preserve offline"
 description.fr = "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
 
-version = "0.7.2~ynh3"
+version = "0.7.3~ynh1"
 
 maintainers = ["Max Fowler"]
 
@@ -38,7 +38,7 @@ ram.runtime = "50M"
     [install.language]
     ask.en = "Choose the application language"
     ask.fr = "Choisissez la langue de l'application"
-    type = "string"
+    type = "select"
     choices = ["fr", "en"]
     default = "fr"
 
@@ -52,8 +52,8 @@ ram.runtime = "50M"
 
 [resources]
         [resources.sources.main]
-        url = "https://github.com/ArchiveBox/ArchiveBox/archive/refs/tags/v0.7.2.tar.gz"
-        sha256 = "19c83716039a1401940c5a8cc0eada10f0d5ee3e7a8dbfa4f7cf35b17ecd8a0b"
+        url = "https://github.com/ArchiveBox/ArchiveBox/archive/refs/tags/v0.7.3.tar.gz"
+        sha256 = "27c344a4e269eaa84195daefa6c28836465886cb9b12f272264253c0a890d256"
         autoupdate.strategy = "latest_github_release"
 
     [resources.ports]
