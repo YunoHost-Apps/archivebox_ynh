@@ -35,7 +35,7 @@ ynh_script_progression "Installing project via pip..."
 
 python3 -m venv "${install_dir}/venv"
 cp ../conf/requirements.txt "$install_dir/requirements.txt"
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R "$app" "$install_dir"
+chown -R "$app" "$install_dir"
 #run source in a 'sub shell'
 (
 	set +o nounset

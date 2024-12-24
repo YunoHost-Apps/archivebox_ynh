@@ -20,8 +20,9 @@ tempdir="$(mktemp -d)"
 ynh_setup_source --dest_dir="$tempdir"
 mkdir -p $install_dir
 
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:www-data "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R $app:www-data "$install_dir"
+
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
@@ -36,7 +37,7 @@ ynh_script_progression "Upgrading via pip"
 
 python3 -m venv "${install_dir}/venv"
 cp ../conf/requirements.txt "$install_dir/requirements.txt"
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R "$app" "$install_dir"
+chown -R "$app" "$install_dir"
 #run source in a 'sub shell'
 (
     set +o nounset
@@ -70,8 +71,8 @@ ynh_script_progression "Updating configuration..."
 ynh_store_file_checksum "$data_dir/ArchiveBox.conf"
 ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
-#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 600 "$data_dir/ArchiveBox.conf"
-#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown $app:$app "$data_dir/ArchiveBox.conf"
+chmod 600 "$data_dir/ArchiveBox.conf"
+chown $app:$app "$data_dir/ArchiveBox.conf"
 
 #=================================================
 # FINISH ARCHIVEBOX SETUP
@@ -88,13 +89,10 @@ popd
 #=================================================
 ynh_script_progression "Upgrading system configurations related to $app..."
 
-# Create a dedicated NGINX config
 ynh_config_add_nginx
 
-# Create a dedicated systemd config
 ynh_config_add_systemd
 
-# Use logrotate to manage app-specific logfile(s)
 ynh_config_add_logrotate
 
 yunohost service add $app --description="Self-hosted internet archiving" --log="/var/log/$app/$app.log"
