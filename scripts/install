@@ -1,11 +1,5 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
@@ -18,16 +12,15 @@ admin_mail=$(ynh_user_get_info $admin 'mail')
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Installing dependencies..." --weight=8
+ynh_script_progression "Installing dependencies..."
 
-ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
+ynh_nodejs_install
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..." --weight=1
+ynh_script_progression "Setting up source files..."
 
-# Download, check integrity, uncompress and patch the source from app.src
 tempdir="$(mktemp -d)"
 ynh_setup_source --dest_dir="$tempdir"
 mkdir -p $install_dir
@@ -36,23 +29,21 @@ chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
 
 #=================================================
-# SPECIFIC SETUP
-#=================================================
 # PIP INSTALLATION
 #=================================================
-ynh_script_progression --message="Installing project via pip..." --weight=80
+ynh_script_progression "Installing project via pip..."
 
 python3 -m venv "${install_dir}/venv"
 cp ../conf/requirements.txt "$install_dir/requirements.txt"
 chown -R "$app" "$install_dir"
-
 #run source in a 'sub shell'
 (
 	set +o nounset
 	source "${install_dir}/venv/bin/activate"
 	set -o nounset
-	ynh_exec_as $app $install_dir/venv/bin/pip install --upgrade pip
-	ynh_exec_as $app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
+	ynh_exec_as_app $install_dir/venv/bin/pip install --upgrade pip
+	ynh_exec_as_app $install_dir/venv/bin/pip install archivebox==0.7.2
+	#ynh_exec_as_app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
 )
 
 # we use this virtualenv archivebox for further commands now
@@ -61,22 +52,22 @@ archivebox_cmd="$install_dir/venv/bin/archivebox"
 #=================================================
 # INSTALL NODE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Installing node dependencies..."
+ynh_script_progression "Installing node dependencies..."
 
 cp -f $tempdir/package.json "$install_dir/package.json"
 cp -f $tempdir/package-lock.json "$install_dir/package-lock.json"
-ynh_secure_remove --file="$tempdir"
+ynh_safe_rm "$tempdir"
+
 pushd $install_dir
-	ynh_use_nodejs
-	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm ci
+	ynh_hide_warnings ynh_exec_as_app npm ci
 popd
 
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding a configuration file..." --weight=1
+ynh_script_progression "Adding $app's configuration..."
 
-ynh_add_config --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
+ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
 chmod 600 "$data_dir/ArchiveBox.conf"
 chown $app:$app "$data_dir/ArchiveBox.conf"
@@ -84,19 +75,20 @@ chown $app:$app "$data_dir/ArchiveBox.conf"
 #=================================================
 # INITIALIZE ARCHIVEBOX
 #=================================================
-ynh_script_progression --message="Initializing $app" --weight=1
+ynh_script_progression "Initializing $app"
 
 pushd $data_dir
-	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init
+	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init
 
-	ynh_script_progression --message="Checking if admin superuser already exists: $admin" --weight=1
-	USER_EXISTS=$(ynh_exec_as $app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
-	ynh_script_progression --message="Found users: $USER_EXISTS" --weight=1
+	ynh_script_progression "Checking if admin superuser already exists: $admin"
+
+	USER_EXISTS=$(ynh_exec_as_app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
+	ynh_script_progression "Found users: $USER_EXISTS"
 
 	if [ $USER_EXISTS -eq 1 ]
 	then
-		ynh_script_progression --message="User already exists: setting admin password" --weight=1
-		ynh_exec_as $app /usr/bin/expect<<EOF
+		ynh_script_progression "User already exists: setting admin password"
+		ynh_exec_as_app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
 spawn sh -c "cd $data_dir && $archivebox_cmd manage changepassword $admin"
@@ -108,8 +100,8 @@ send -- "$password\r"
 expect eof
 EOF
 	else
-		ynh_script_progression --message="Creating new Archivebox superuser: $admin" --weight=1
-		ynh_exec_as $app /usr/bin/expect<<EOF
+		ynh_script_progression "Creating new Archivebox superuser: $admin"
+		ynh_exec_as_app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
 spawn sh -c "cd $data_dir && $archivebox_cmd manage createsuperuser --username $admin --email $admin_mail"
@@ -122,36 +114,33 @@ expect eof
 EOF
 	fi
 
-	ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
-	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
+	ynh_script_progression "Finishing Archivebox Setup"
+
+	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init --setup
 popd
 
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
+ynh_script_progression "Adding system configurations related to $app..."
 
-# Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
-# Create a dedicated systemd config
-ynh_add_systemd_config
+ynh_config_add_systemd
 
-# Use logrotate to manage application logfile(s)
-ynh_use_logrotate
+ynh_config_add_logrotate
 
 yunohost service add $app --description="Self-hosted internet archiving" --log="/var/log/$app/$app.log"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --weight=1
+ynh_script_progression "Starting $app's systemd service..."
 
-# Start a systemd service
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemctl --service=$app --action="start"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --last
+ynh_script_progression "Installation of $app completed"
