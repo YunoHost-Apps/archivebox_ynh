@@ -1,3 +1,5 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
+
 packaging_format = 2
 
 id = "archivebox"
@@ -51,12 +53,10 @@ ram.runtime = "50M"
     type = "password"
 
 [resources]
-        [resources.sources.main]
-        url = "https://github.com/ArchiveBox/ArchiveBox/archive/refs/tags/v0.7.3.tar.gz"
-        sha256 = "27c344a4e269eaa84195daefa6c28836465886cb9b12f272264253c0a890d256"
-        autoupdate.strategy = "latest_github_release"
-
-    [resources.ports]
+    [resources.sources.main]
+    url = "https://github.com/ArchiveBox/ArchiveBox/archive/refs/tags/v0.7.3.tar.gz"
+    sha256 = "27c344a4e269eaa84195daefa6c28836465886cb9b12f272264253c0a890d256"
+    autoupdate.strategy = "latest_github_release"
 
     [resources.system_user]
 
@@ -66,6 +66,8 @@ ram.runtime = "50M"
 
     [resources.permissions]
     main.url = "/"
+
+    [resources.ports]
 
     [resources.apt]
     packages = "python3-venv, expect, apt-transport-https, ca-certificates, gnupg2, zlib1g-dev, dumb-init, gosu, unzip, curl, fontconfig, fonts-ipafont-gothic, fonts-wqy-zenhei, fonts-thai-tlwg, fonts-kacst, fonts-symbola, fonts-noto, fonts-freefont-ttf, wget, curl, chromium, ffmpeg, youtube-dl, ripgrep, build-essential, python3-dev"
