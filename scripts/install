@@ -17,46 +17,22 @@ ynh_script_progression "Installing dependencies..."
 ynh_nodejs_install
 
 #=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
+# INSTALL PYTHON DEPENDENCIES
 #=================================================
-ynh_script_progression "Setting up source files..."
+ynh_script_progression "Installing Python dependencies..."
 
-tempdir="$(mktemp -d)"
-ynh_setup_source --dest_dir="$tempdir"
-mkdir -p $install_dir
+pushd $install_dir
+    python3 -m venv $install_dir/venv
+    ynh_hide_warnings $install_dir/venv/bin/pip install --upgrade pip 
+    ynh_hide_warnings $install_dir/venv/bin/pip install archivebox==$(ynh_app_upstream_version)
+popd
 
-chmod -R o-rwx "$install_dir"
-chown -R $app:www-data "$install_dir"
-
-#=================================================
-# PIP INSTALLATION
-#=================================================
-ynh_script_progression "Installing project via pip..."
-
-python3 -m venv "${install_dir}/venv"
-cp ../conf/requirements.txt "$install_dir/requirements.txt"
-chown -R "$app" "$install_dir"
-#run source in a 'sub shell'
-(
-	set +o nounset
-	source "${install_dir}/venv/bin/activate"
-	set -o nounset
-	ynh_exec_as_app $install_dir/venv/bin/pip install --upgrade pip
-	ynh_exec_as_app $install_dir/venv/bin/pip install archivebox==$(ynh_app_upstream_version)
-	#ynh_exec_as_app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
-)
-
-# we use this virtualenv archivebox for further commands now
-archivebox_cmd="$install_dir/venv/bin/archivebox"
+chown -R $app:$app "$install_dir"
 
 #=================================================
 # INSTALL NODE DEPENDENCIES
 #=================================================
 ynh_script_progression "Installing node dependencies..."
-
-cp -f $tempdir/package.json "$install_dir/package.json"
-cp -f $tempdir/package-lock.json "$install_dir/package-lock.json"
-ynh_safe_rm "$tempdir"
 
 pushd $install_dir
 	ynh_hide_warnings ynh_exec_as_app npm ci
@@ -78,11 +54,11 @@ chown $app:$app "$data_dir/ArchiveBox.conf"
 ynh_script_progression "Initializing $app"
 
 pushd $data_dir
-	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init
+	ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/archivebox" init
 
 	ynh_script_progression "Checking if admin superuser already exists: $admin"
 
-	USER_EXISTS=$(ynh_exec_as_app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
+	USER_EXISTS=$(ynh_exec_as_app "$install_dir/venv/bin/archivebox" manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
 	ynh_script_progression "Found users: $USER_EXISTS"
 
 	if [ $USER_EXISTS -eq 1 ]
@@ -91,7 +67,7 @@ pushd $data_dir
 		ynh_exec_as_app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
-spawn sh -c "cd $data_dir && $archivebox_cmd manage changepassword $admin"
+spawn sh -c "cd $data_dir && "$install_dir/venv/bin/archivebox" manage changepassword $admin"
 match_max 100000
 expect "*?assword: "
 send -- "$password\r"
@@ -104,7 +80,7 @@ EOF
 		ynh_exec_as_app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
-spawn sh -c "cd $data_dir && $archivebox_cmd manage createsuperuser --username $admin --email $admin_mail"
+spawn sh -c "cd $data_dir && "$install_dir/venv/bin/archivebox" manage createsuperuser --username $admin --email $admin_mail"
 match_max 100000
 expect "*?assword: "
 send -- "$password\r"
@@ -116,7 +92,7 @@ EOF
 
 	ynh_script_progression "Finishing Archivebox Setup"
 
-	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init --setup
+	ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/archivebox" init --setup
 popd
 
 #=================================================
