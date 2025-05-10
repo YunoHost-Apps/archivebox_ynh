@@ -5,7 +5,9 @@ No se debe editar a mano.
 
 # ArchiveBox para Yunohost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/archivebox.svg)](https://ci-apps.yunohost.org/ci/apps/archivebox/) ![Estado funcional](https://ci-apps.yunohost.org/ci/badges/archivebox.status.svg) ![Estado En Mantención](https://ci-apps.yunohost.org/ci/badges/archivebox.maintain.svg)
+[![Nivel de integración](https://apps.yunohost.org/badge/integration/archivebox)](https://ci-apps.yunohost.org/ci/apps/archivebox/)
+![Estado funcional](https://apps.yunohost.org/badge/state/archivebox)
+![Estado En Mantención](https://apps.yunohost.org/badge/maintained/archivebox)
 
 [![Instalar ArchiveBox con Yunhost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=archivebox)
 
@@ -19,7 +21,7 @@ No se debe editar a mano.
 Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
-**Versión actual:** 0.7.2~ynh3
+**Versión actual:** 0.7.3~ynh1
 
 **Demo:** <https://archiveboxdemo.commoninternet.net>
 
@@ -37,7 +39,7 @@ Archiving solution to collect, save, and view sites you want to preserve offline
 
 ## Información para desarrolladores
 
-Por favor enviar sus correcciones a la [`branch testing`](https://github.com/YunoHost-Apps/archivebox_ynh/tree/testing
+Por favor enviar sus correcciones a la [rama `testing`](https://github.com/YunoHost-Apps/archivebox_ynh/tree/testing).
 
 Para probar la rama `testing`, sigue asÍ:
 

@@ -5,7 +5,9 @@
 
 # YunoHost 上的 ArchiveBox
 
-[![集成程度](https://dash.yunohost.org/integration/archivebox.svg)](https://ci-apps.yunohost.org/ci/apps/archivebox/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/archivebox.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/archivebox.maintain.svg)
+[![集成程度](https://apps.yunohost.org/badge/integration/archivebox)](https://ci-apps.yunohost.org/ci/apps/archivebox/)
+![工作状态](https://apps.yunohost.org/badge/state/archivebox)
+![维护状态](https://apps.yunohost.org/badge/maintained/archivebox)
 
 [![使用 YunoHost 安装 ArchiveBox](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=archivebox)
 
@@ -19,7 +21,7 @@
 Archiving solution to collect, save, and view sites you want to preserve offline.
 
 
-**分发版本：** 0.7.2~ynh3
+**分发版本：** 0.7.3~ynh1
 
 **演示：** <https://archiveboxdemo.commoninternet.net>
 
