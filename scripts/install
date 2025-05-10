@@ -7,7 +7,8 @@ source /usr/share/yunohost/helpers
 # RETRIEVE ARGUMENTS FROM THE MANIFEST
 #=================================================
 
-admin_mail=$(ynh_user_get_info $admin 'mail')
+admin_email=$(ynh_user_get_info --username="$admin" --key="mail")
+ynh_app_setting_set --key="admin_email" --value="$admin_email"
 
 #=================================================
 # INSTALL DEPENDENCIES
@@ -80,7 +81,7 @@ EOF
 		ynh_exec_as_app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
-spawn sh -c "cd $data_dir && "$install_dir/venv/bin/archivebox" manage createsuperuser --username $admin --email $admin_mail"
+spawn sh -c "cd $data_dir && "$install_dir/venv/bin/archivebox" manage createsuperuser --username $admin --email $admin_email"
 match_max 100000
 expect "*?assword: "
 send -- "$password\r"

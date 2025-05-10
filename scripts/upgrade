@@ -11,19 +11,6 @@ ynh_script_progression "Stopping $app's systemd service..."
 ynh_systemctl --service=$app --action="stop"
 
 #=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
-#=================================================
-ynh_script_progression "Upgrading source files..."
-
-# Download, check integrity, uncompress and patch the source from app.src
-tempdir="$(mktemp -d)"
-ynh_setup_source --dest_dir="$tempdir"
-mkdir -p $install_dir
-
-chmod -R o-rwx "$install_dir"
-chown -R $app:www-data "$install_dir"
-
-#=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
 ynh_script_progression "Upgrading dependencies..."
@@ -31,35 +18,25 @@ ynh_script_progression "Upgrading dependencies..."
 ynh_nodejs_install
 
 #=================================================
-# UPGRADE VIA PIP
+# INSTALL PYTHON DEPENDENCIES
 #=================================================
-ynh_script_progression "Upgrading via pip"
+ynh_script_progression "Installing Python dependencies..."
 
-python3 -m venv "${install_dir}/venv"
-chown -R "$app" "$install_dir"
-#run source in a 'sub shell'
-(
-    set +o nounset
-    source "${install_dir}/venv/bin/activate"
-    set -o nounset
-    ynh_exec_as_app $install_dir/venv/bin/pip install --upgrade pip
-    ynh_exec_as_app $install_dir/venv/bin/pip install archivebox==$(ynh_app_upstream_version)
-)
+pushd $install_dir
+    python3 -m venv $install_dir/venv
+    ynh_hide_warnings $install_dir/venv/bin/pip install --upgrade pip 
+    ynh_hide_warnings $install_dir/venv/bin/pip install archivebox==$(ynh_app_upstream_version)
+popd
 
-# we use this virtualenv archivebox for further commands now
-archivebox_cmd="$install_dir/venv/bin/archivebox"
+chown -R $app:$app "$install_dir"
 
 #=================================================
 # UPGRADE NODE DEPENDENCIES
 #=================================================
 ynh_script_progression "Upgrading node dependencies..."
 
-cp -f $tempdir/package.json "$install_dir/package.json"
-cp -f $tempdir/package-lock.json "$install_dir/package-lock.json"
-ynh_safe_rm "$tempdir"
 pushd $install_dir
-
-	ynh_hide_warnings ynh_exec_as_app node_load_PATH npm ci
+	ynh_hide_warnings ynh_exec_as_app npm ci
 popd
 
 #=================================================
@@ -80,7 +57,7 @@ chown $app:$app "$data_dir/ArchiveBox.conf"
 # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
 ynh_script_progression "Finishing Archivebox Setup"
 pushd $data_dir
-	ynh_hide_warnings ynh_exec_as_app node_load_PATH $archivebox_cmd init --setup
+	ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/archivebox" init --setup
 popd
 
 #=================================================
