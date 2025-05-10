@@ -36,7 +36,6 @@ ram.runtime = "50M"
     type = "domain"
 
     [install.init_main_permission]
-    help.en = "If true, saved archives will be viewable without logging in."
     type = "group"
     default = "visitors"
 
