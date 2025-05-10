@@ -1,1 +1,1 @@
-archivebox==0.7.2;
+archivebox==0.7.3;

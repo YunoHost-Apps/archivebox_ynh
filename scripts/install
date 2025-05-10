@@ -42,7 +42,7 @@ chown -R "$app" "$install_dir"
 	source "${install_dir}/venv/bin/activate"
 	set -o nounset
 	ynh_exec_as_app $install_dir/venv/bin/pip install --upgrade pip
-	ynh_exec_as_app $install_dir/venv/bin/pip install archivebox==0.7.2
+	ynh_exec_as_app $install_dir/venv/bin/pip install archivebox==$(ynh_app_upstream_version)
 	#ynh_exec_as_app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
 )
 
