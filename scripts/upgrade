@@ -47,7 +47,6 @@ ynh_script_progression --message="Upgrading via pip" --weight=1
 
 ynh_use_nodejs
 python3 -m venv "${install_dir}/venv"
-cp ../conf/requirements.txt "$install_dir/requirements.txt"
 chown -R "$app" "$install_dir"
 
 #run source in a 'sub shell'
@@ -56,7 +55,7 @@ chown -R "$app" "$install_dir"
     source "${install_dir}/venv/bin/activate"
     set -o nounset
     ynh_exec_as $app $install_dir/venv/bin/pip install --upgrade pip
-    ynh_exec_as $app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
+    ynh_exec_as $app $install_dir/venv/bin/pip install archivebox==$(ynh_app_upstream_version)
 )
 
 # we use this virtualenv archivebox for further commands now
