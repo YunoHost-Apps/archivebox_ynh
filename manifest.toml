@@ -7,7 +7,7 @@ name = "ArchiveBox"
 description.en = "Archiving solution to collect, save, and view sites you want to preserve offline"
 description.fr = "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
 
-version = "0.7.3~ynh1"
+version = "0.7.3~ynh2"
 
 maintainers = ["Max Fowler"]
 
@@ -22,8 +22,10 @@ code = "https://github.com/ArchiveBox/ArchiveBox"
 yunohost = ">= 11.2"
 architectures = "all"
 multi_instance = true
+
 ldap = false
 sso = false
+
 disk = "50M"
 ram.build = "50M"
 ram.runtime = "50M"
