@@ -34,8 +34,6 @@ chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
 
 #=================================================
-# SPECIFIC SETUP
-#=================================================
 # PIP INSTALLATION
 #=================================================
 ynh_script_progression --message="Installing project via pip..." --weight=80
@@ -49,7 +47,8 @@ chown -R "$app" "$install_dir"
 	source "${install_dir}/venv/bin/activate"
 	set -o nounset
 	ynh_exec_as $app $install_dir/venv/bin/pip install --upgrade pip
-	ynh_exec_as $app $install_dir/venv/bin/pip install archivebox==$(ynh_app_upstream_version)
+	ynh_exec_as $app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
+	-r "$install_dir/requirements.txt"
 )
 
 # we use this virtualenv archivebox for further commands now
