@@ -6,7 +6,7 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source _common.sh
+
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -20,7 +20,7 @@ admin_mail=$(ynh_user_get_info $admin 'mail')
 #=================================================
 ynh_script_progression --message="Installing dependencies..." --weight=8
 
-ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
+#REMOVEME? ynh_exec_warn_less #REMOVEME? ynh_install_nodejs --#REMOVEME? nodejs_version=$nodejs_version
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -67,7 +67,7 @@ cp -f $tempdir/package.json "$install_dir/package.json"
 cp -f $tempdir/package-lock.json "$install_dir/package-lock.json"
 ynh_secure_remove --file="$tempdir"
 pushd $install_dir
-	ynh_use_nodejs
+	#REMOVEME? ynh_use_nodejs
 	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm ci
 popd
 

@@ -6,7 +6,7 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source _common.sh
+
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -36,7 +36,7 @@ chown -R $app:www-data "$install_dir"
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..." --weight=1
 
-ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
+#REMOVEME? ynh_exec_warn_less #REMOVEME? ynh_install_nodejs --#REMOVEME? nodejs_version=$nodejs_version
 
 #=================================================
 # SPECIFIC UPGRADE
@@ -45,7 +45,7 @@ ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
 #=================================================
 ynh_script_progression --message="Upgrading via pip" --weight=1
 
-ynh_use_nodejs
+#REMOVEME? ynh_use_nodejs
 python3 -m venv "${install_dir}/venv"
 cp ../conf/requirements.txt "$install_dir/requirements.txt"
 chown -R "$app" "$install_dir"
@@ -71,7 +71,7 @@ cp -f $tempdir/package.json "$install_dir/package.json"
 cp -f $tempdir/package-lock.json "$install_dir/package-lock.json"
 ynh_secure_remove --file="$tempdir"
 pushd $install_dir
-	ynh_use_nodejs
+	#REMOVEME? ynh_use_nodejs
 	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm ci
 popd
 

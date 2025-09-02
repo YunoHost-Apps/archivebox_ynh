@@ -19,7 +19,7 @@ admindoc = "https://github.com/ArchiveBox/ArchiveBox/wiki"
 code = "https://github.com/ArchiveBox/ArchiveBox"
 
 [integration]
-yunohost = ">= 11.2"
+yunohost = ">= 12.1.17"
 architectures = "all"
 multi_instance = true
 ldap = false
@@ -71,3 +71,6 @@ ram.runtime = "50M"
 
     [resources.apt]
     packages = "python3-venv, expect, apt-transport-https, ca-certificates, gnupg2, zlib1g-dev, dumb-init, gosu, unzip, curl, fontconfig, fonts-ipafont-gothic, fonts-wqy-zenhei, fonts-thai-tlwg, fonts-kacst, fonts-symbola, fonts-noto, fonts-freefont-ttf, wget, curl, chromium, ffmpeg, youtube-dl, ripgrep, build-essential, python3-dev"
+
+    [resources.nodejs]
+    version = "20"
