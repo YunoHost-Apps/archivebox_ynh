@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -9,13 +8,6 @@ source /usr/share/yunohost/helpers
 ynh_script_progression "Stopping $app's systemd service..."
 
 ynh_systemctl --service=$app --action="stop"
-
-#=================================================
-# UPGRADE DEPENDENCIES
-#=================================================
-ynh_script_progression "Upgrading dependencies..."
-
-ynh_nodejs_install
 
 #=================================================
 # INSTALL PYTHON DEPENDENCIES
@@ -56,6 +48,7 @@ chown $app:$app "$data_dir/ArchiveBox.conf"
 
 # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
 ynh_script_progression "Finishing Archivebox Setup"
+
 pushd $data_dir
 	ynh_hide_warnings ynh_exec_as_app "$install_dir/venv/bin/archivebox" init --setup
 popd
