@@ -72,7 +72,14 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.ports]
-
+	
+    [resources.apt.extras.mise]
+	repo = "deb https://mise.jdx.dev/deb stable main"
+	key = "https://mise.jdx.dev/gpg-key.pub"
+	packages = [
+		"mise"
+	]
+    
     [resources.apt]
 packages = [
     "libldap2-dev",
@@ -110,3 +117,8 @@ packages_from_raw_bash = """
         echo "fonts-kacst-one";
     fi
     """
+
+	
+    [resources.nodejs]
+    version = "22"
+    
