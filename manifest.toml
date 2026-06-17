@@ -73,8 +73,36 @@ ram.runtime = "50M"
     [resources.ports]
 
     [resources.apt]
-    packages = "python3-venv, expect, apt-transport-https, ca-certificates, gnupg2, zlib1g-dev, dumb-init, gosu, unzip, curl, fontconfig, fonts-ipafont-gothic, fonts-wqy-zenhei, fonts-thai-tlwg, fonts-symbola, fonts-noto, fonts-freefont-ttf, wget, curl, chromium, ffmpeg, yt-dlp, ripgrep, build-essential, python3-dev"
-    packages_from_raw_bash = """
+packages = [
+    "libldap2-dev",
+    "libsasl2-dev",
+    "libssl-dev",
+    "python3-venv",
+    "expect",
+    "apt-transport-https",
+    "ca-certificates",
+    "gnupg2",
+    "zlib1g-dev",
+    "dumb-init",
+    "gosu",
+    "unzip",
+    "curl",
+    "wget",
+    "fontconfig",
+    "fonts-ipafont-gothic",
+    "fonts-wqy-zenhei",
+    "fonts-thai-tlwg",
+    "fonts-symbola",
+    "fonts-noto",
+    "fonts-freefont-ttf",
+    "chromium",
+    "ffmpeg",
+    "yt-dlp",
+    "ripgrep",
+    "build-essential",
+    "python3-dev",
+    ]
+packages_from_raw_bash = """
     if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then
         echo "fonts-kacst";
     elif [[ $YNH_DEBIAN_VERSION == "trixie" ]]; then
