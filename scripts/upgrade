@@ -10,12 +10,6 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# STORE SETTINGS
-#=================================================
-
-python_version=3.11
-
-#=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..." 
@@ -31,28 +25,23 @@ ynh_setup_source --dest_dir="$install_dir" --full_replace --keep=".venv .uv .uv_
 chown -R "$app:www-data" "$install_dir"
 
 #=================================================
-# UPGRADE UV
+# UPGRADE VIA PIP
 #=================================================
-ynh_script_progression --message="Upgrading uv..."
+ynh_script_progression --message="Upgrading via pip"
 
-ynh_setup_source --dest_dir="$install_dir/.uv" --source_id="uv"
-chmod +x "$install_dir/.uv/uv"
+python3 -m venv "${install_dir}/venv"
+chown -R "$app" "$install_dir"
 
-export PATH="$install_dir/.uv:$PATH"
-export UV_PYTHON_INSTALL_DIR="$install_dir/.python_runtime"
-export UV_CACHE_DIR="$install_dir/.uv_cache"
+#run source in a 'sub shell'
+(
+    set +o nounset
+    source "${install_dir}/venv/bin/activate"
+    set -o nounset
+    ynh_exec_as $app $install_dir/venv/bin/pip install --upgrade pip
+    ynh_exec_as $app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
+)
 
-#=================================================
-# UPGRADE UV PROJECT
-#=================================================
-ynh_script_progression --message="Upgrading $app's dependencies..."
-
-ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
-ynh_hide_warnings uv pip install --python "$install_dir/.venv/bin/python" -r "$install_dir/requirements.txt"
-# future upgrades : ynh_hide_warnings uv sync --frozen --no-dev --python "$python_version" --project "$install_dir"
-chown -R "$app:" "$install_dir"
-
-archivebox_cmd="$install_dir/.venv/bin/archivebox"
+archivebox_cmd="$install_dir/venv/bin/archivebox"
 
 #=================================================
 # UPGRADE NODE DEPENDENCIES
