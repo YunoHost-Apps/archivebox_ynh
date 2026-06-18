@@ -12,7 +12,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 
 admin_mail=$(ynh_user_get_info --username="$admin" --key="mail")
-python_version=3.13
+python_version=3.11
 
 
 #=================================================
