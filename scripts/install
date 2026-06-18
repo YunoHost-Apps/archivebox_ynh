@@ -64,7 +64,7 @@ popd
 #=================================================
 ynh_script_progression --message="Adding a configuration file..."
 
-ynh_add_config --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
+ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
 chmod 600 "$data_dir/ArchiveBox.conf"
 chown $app:$app "$data_dir/ArchiveBox.conf"
