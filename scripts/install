@@ -23,6 +23,7 @@ ynh_script_progression --message="Setting up source files..."
 # Download, check integrity, uncompress and patch the source from app.src
 
 ynh_setup_source --dest_dir="$install_dir"
+ynh_replace --match="python-ldap==3.4.6" --replace="python-ldap>=3.4.6" --file="$install_dir/requirements.txt"
 ynh_setup_source --dest_dir="$install_dir/.uv" --source_id="uv"
 
 chmod +x "$install_dir/.uv/uv"
