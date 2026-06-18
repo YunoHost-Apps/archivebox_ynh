@@ -46,8 +46,6 @@ ynh_script_progression "Installing $app's dependencies..."
 
 #    ynh_hide_warnings uv sync --no-dev --python $python_version --project "$install_dir" 
 	ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
-	echo "source $install_dir/.venv/bin/activate" >> $install_dir/.bashrc
-    source $install_dir/.venv/bin/activate
 	ynh_hide_warnings uv pip install --python "$install_dir/.venv/bin/python" "archivebox==$(ynh_app_upstream_version)"
     chown -R "$app:" "$install_dir"
 
