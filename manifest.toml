@@ -98,7 +98,6 @@ packages = [
     "libsasl2-dev",
     "libssl-dev",
     "python3-venv",
-    "expect",
     "apt-transport-https",
     "ca-certificates",
     "gnupg2",
