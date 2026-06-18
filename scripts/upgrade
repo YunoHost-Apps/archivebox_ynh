@@ -47,9 +47,8 @@ export UV_CACHE_DIR="$install_dir/.uv_cache"
 #=================================================
 ynh_script_progression --message="Upgrading $app's dependencies..."
 
-ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
-ynh_hide_warnings uv pip install --python "$install_dir/.venv/bin/python" -r "$install_dir/requirements.txt"
-# future upgrades : ynh_hide_warnings uv sync --frozen --no-dev --python "$python_version" --project "$install_dir"
+
+ynh_hide_warnings uv sync --no-dev --python "$python_version" --project "$install_dir"
 chown -R "$app:" "$install_dir"
 
 archivebox_cmd="$install_dir/.venv/bin/archivebox"
@@ -68,7 +67,7 @@ popd
 #=================================================
 ynh_script_progression --message="Updating a configuration file..." 
 
-ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
+ynh_add_config --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
 chmod 600 "$data_dir/ArchiveBox.conf"
 chown $app:$app "$data_dir/ArchiveBox.conf"

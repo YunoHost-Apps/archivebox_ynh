@@ -23,7 +23,6 @@ ynh_script_progression --message="Setting up source files..."
 # Download, check integrity, uncompress and patch the source from app.src
 
 ynh_setup_source --dest_dir="$install_dir"
-ynh_replace --match="python-ldap==3.4.6" --replace="python-ldap>=3.4.6" --file="$install_dir/requirements.txt"
 ynh_setup_source --dest_dir="$install_dir/.uv" --source_id="uv"
 
 chmod +x "$install_dir/.uv/uv"
@@ -45,9 +44,7 @@ ynh_script_progression "Preparing UV..."
 
 ynh_script_progression "Installing $app's dependencies..."
 
-	uv venv --python "$python_version" "$install_dir/.venv"
-    # for future upgrades : ynh_hide_warnings uv sync --frozen --no-dev --python $python_version --project "$install_dir" 
-	uv pip install --python "$install_dir/.venv/bin/python" -r "$install_dir/requirements.txt"
+    ynh_hide_warnings uv sync --no-dev --python $python_version --project "$install_dir" 
     chown -R "$app:" "$install_dir"
 
 # we use this virtualenv archivebox for further commands now
@@ -67,7 +64,7 @@ popd
 #=================================================
 ynh_script_progression --message="Adding a configuration file..."
 
-ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
+ynh_add_config --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
 chmod 600 "$data_dir/ArchiveBox.conf"
 chown $app:$app "$data_dir/ArchiveBox.conf"
