@@ -79,41 +79,12 @@ ynh_script_progression "Initializing $app"
 pushd $data_dir
 	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init
 
-	ynh_script_progression "Checking if admin superuser already exists: $admin"
+	ynh_exec_as_app $archivebox_cmd manage createsuperuser --username "$admin" --email "$admin_mail" --noinput || true
 
-	USER_EXISTS=$(ynh_hide_warnings ynh_exec_as_app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
-	ynh_script_progression "Found users: $USER_EXISTS"
-
-	if [ $USER_EXISTS -eq 1 ]
-	then
-		ynh_script_progression "User already exists: setting admin password"
-		ynh_exec_as_app /usr/bin/expect<<EOF
-set force_conservative 0  ;
-set timeout -1
-spawn sh -c "cd $data_dir && $archivebox_cmd manage changepassword $admin"
-match_max 100000
-expect "*?assword: "
-send -- "$password\r"
-expect "*?assword (again): "
-send -- "$password\r"
-expect eof
-EOF
-	else
-		ynh_script_progression "Creating new Archivebox superuser: $admin"
-		ynh_exec_as_app /usr/bin/expect<<EOF
-set force_conservative 0  ;
-set timeout -1
-spawn sh -c "cd $data_dir && $archivebox_cmd manage createsuperuser --username $admin --email $admin_mail"
-match_max 100000
-expect "*?assword: "
-send -- "$password\r"
-expect "*?assword (again): "
-send -- "$password\r"
-expect eof
-EOF
-	fi
-
-	ynh_script_progression "Finishing Archivebox Setup" --weight=1
+	ynh_exec_as_app $archivebox_cmd manage shell -c \
+    "from django.contrib.auth.models import User; u=User.objects.get(username='$admin'); u.set_password('$password'); u.save()"
+	
+	ynh_script_progression "Finishing Archivebox Setup"
 	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init --setup
 popd
 
