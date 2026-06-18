@@ -20,7 +20,7 @@ code = "https://github.com/ArchiveBox/ArchiveBox"
 
 [integration]
 yunohost = ">= 12.1.38"
-#helpers_version = "2.1"
+helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
 
@@ -61,6 +61,24 @@ ram.runtime = "50M"
     sha256 = "75ed23741f1198d19e77b7adc7a73184683912450b16535a27c9e1695230086b"
     autoupdate.strategy = "latest_github_release"
 
+
+    [resources.sources.uv]
+    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.11.21/uv-x86_64-unknown-linux-gnu.tar.gz"
+    amd64.sha256 = "8c88519b0ef0af9801fcdee419bbb12116bd9e6b18e162ae093c932d8b264050"
+    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.11.21/uv-aarch64-unknown-linux-gnu.tar.gz"
+    arm64.sha256 = "88e800834007cc5efd4675f166eb2a51e7e3ad19876d85fa8805a6fb5c922397"
+    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.11.21/uv-armv7-unknown-linux-gnueabihf.tar.gz"
+    armhf.sha256 = "929440f991ccd8097e01be1ec831f673ac7bbf508e94819b4270f2873f69e658"
+
+    in_subdir = true
+    
+    autoupdate.strategy = "latest_github_release"
+    autoupdate.upstream = "https://github.com/astral-sh/uv"
+    autoupdate.asset.amd64 = "^uv-x86_64-unknown-linux-gnu.tar.gz"
+    autoupdate.asset.arm64 = "^uv-aarch64-unknown-linux-gnu.tar.gz"
+    autoupdate.asset.armhf = "^uv-armv7-unknown-linux-gnueabihf.tar.gz"
+
+
     [resources.system_user]
 
     [resources.install_dir]
@@ -73,12 +91,6 @@ ram.runtime = "50M"
 
     [resources.ports]
 	
-    [resources.apt.extras.mise]
-	repo = "deb https://mise.jdx.dev/deb stable main"
-	key = "https://mise.jdx.dev/gpg-key.pub"
-	packages = [
-		"mise"
-	]
     
     [resources.apt]
 packages = [
