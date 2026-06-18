@@ -27,7 +27,7 @@ ynh_systemctl --service="$app" --action="stop"
 #=================================================
 ynh_script_progression "Upgrading source files..."
 
-ynh_setup_source --dest_dir="$install_dir" --full_replace
+ynh_setup_source --dest_dir="$install_dir" --full_replace --keep=".venv .uv .python_runtime .uv_cache"
 chown -R "$app:www-data" "$install_dir"
 
 #=================================================
@@ -49,7 +49,7 @@ ynh_script_progression "Upgrading $app's dependencies..."
 
 
 #ynh_hide_warnings uv sync --no-dev --python "$python_version" --project "$install_dir"
-	ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
+	#ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
 	ynh_hide_warnings uv pip install --python "$install_dir/.venv/bin/python" "archivebox==$(ynh_app_upstream_version)"
 chown -R "$app:" "$install_dir"
 
@@ -67,12 +67,12 @@ popd
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-ynh_script_progression "Updating a configuration file..." 
+#ynh_script_progression "Updating a configuration file..." 
 
-ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
+#ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
-chmod 600 "$data_dir/ArchiveBox.conf"
-chown $app:$app "$data_dir/ArchiveBox.conf"
+#chmod 600 "$data_dir/ArchiveBox.conf"
+#chown $app:$app "$data_dir/ArchiveBox.conf"
 
 #=================================================
 # FINISH ARCHIVEBOX SETUP
