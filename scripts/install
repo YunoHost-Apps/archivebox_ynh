@@ -18,7 +18,7 @@ python_version=3.11
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..." 
+ynh_script_progression "Setting up source files..." 
 
 # Download, check integrity, uncompress and patch the source from app.src
 
@@ -55,7 +55,7 @@ archivebox_cmd="$install_dir/.venv/bin/archivebox"
 #=================================================
 # INSTALL NODE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Installing node dependencies..."
+ynh_script_progression "Installing node dependencies..."
 
 pushd $install_dir
 	ynh_hide_warnings npm ci
@@ -64,7 +64,7 @@ popd
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding a configuration file..."
+ynh_script_progression "Adding a configuration file..."
 
 ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
@@ -74,19 +74,19 @@ chown $app:$app "$data_dir/ArchiveBox.conf"
 #=================================================
 # INITIALIZE ARCHIVEBOX
 #=================================================
-ynh_script_progression --message="Initializing $app" 
+ynh_script_progression "Initializing $app" 
 
 pushd $data_dir
 	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init
 
-	ynh_script_progression --message="Checking if admin superuser already exists: $admin"
+	ynh_script_progression "Checking if admin superuser already exists: $admin"
 
 	USER_EXISTS=$(ynh_hide_warnings ynh_exec_as_app $archivebox_cmd manage shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username='$admin').count())")
-	ynh_script_progression --message="Found users: $USER_EXISTS"
+	ynh_script_progression "Found users: $USER_EXISTS"
 
 	if [ $USER_EXISTS -eq 1 ]
 	then
-		ynh_script_progression --message="User already exists: setting admin password"
+		ynh_script_progression "User already exists: setting admin password"
 		ynh_exec_as_app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
@@ -99,7 +99,7 @@ send -- "$password\r"
 expect eof
 EOF
 	else
-		ynh_script_progression --message="Creating new Archivebox superuser: $admin"
+		ynh_script_progression "Creating new Archivebox superuser: $admin"
 		ynh_exec_as_app /usr/bin/expect<<EOF
 set force_conservative 0  ;
 set timeout -1
@@ -113,14 +113,14 @@ expect eof
 EOF
 	fi
 
-	ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
+	ynh_script_progression "Finishing Archivebox Setup" --weight=1
 	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init --setup
 popd
 
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding system configurations related to $app..." 
+ynh_script_progression "Adding system configurations related to $app..." 
 # Create a dedicated NGINX config
 ynh_config_add_nginx
 
@@ -135,7 +135,7 @@ yunohost service add $app --description="Self-hosted internet archiving" --log="
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." 
+ynh_script_progression "Starting a systemd service..." 
 
 # Start a systemd service
 ynh_systemctl --service="$app" --action="start"
@@ -144,4 +144,4 @@ ynh_systemctl --service="$app" --action="start"
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --last
+ynh_script_progression "Installation of $app completed" --last

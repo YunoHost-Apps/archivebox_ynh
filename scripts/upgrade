@@ -18,14 +18,14 @@ python_version=3.11
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..." 
+ynh_script_progression "Stopping a systemd service..." 
 
 ynh_systemctl --service="$app" --action="stop"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Upgrading source files..."
+ynh_script_progression "Upgrading source files..."
 
 ynh_setup_source --dest_dir="$install_dir" --full_replace --keep=".venv .uv .uv_cache .python_runtime"
 chown -R "$app:www-data" "$install_dir"
@@ -33,7 +33,7 @@ chown -R "$app:www-data" "$install_dir"
 #=================================================
 # UPGRADE UV
 #=================================================
-ynh_script_progression --message="Upgrading uv..."
+ynh_script_progression "Upgrading uv..."
 
 ynh_setup_source --dest_dir="$install_dir/.uv" --source_id="uv"
 chmod +x "$install_dir/.uv/uv"
@@ -45,7 +45,7 @@ export UV_CACHE_DIR="$install_dir/.uv_cache"
 #=================================================
 # UPGRADE UV PROJECT
 #=================================================
-ynh_script_progression --message="Upgrading $app's dependencies..."
+ynh_script_progression "Upgrading $app's dependencies..."
 
 
 #ynh_hide_warnings uv sync --no-dev --python "$python_version" --project "$install_dir"
@@ -58,7 +58,7 @@ archivebox_cmd="$install_dir/.venv/bin/archivebox"
 #=================================================
 # UPGRADE NODE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Upgrading node dependencies..."
+ynh_script_progression "Upgrading node dependencies..."
 
 pushd "$install_dir"
     ynh_hide_warnings npm ci
@@ -67,7 +67,7 @@ popd
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-ynh_script_progression --message="Updating a configuration file..." 
+ynh_script_progression "Updating a configuration file..." 
 
 ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
@@ -79,7 +79,7 @@ chown $app:$app "$data_dir/ArchiveBox.conf"
 #=================================================
 
 # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
-ynh_script_progression --message="Finishing Archivebox Setup" 
+ynh_script_progression "Finishing Archivebox Setup" 
 
 pushd "$data_dir"
     ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init --setup
@@ -88,7 +88,7 @@ popd
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Upgrading system configurations related to $app..."
+ynh_script_progression "Upgrading system configurations related to $app..."
 
 # Create a dedicated NGINX config
 ynh_config_add_nginx
@@ -104,7 +104,7 @@ yunohost service add $app --description="Self-hosted internet archiving" --log="
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." 
+ynh_script_progression "Starting a systemd service..." 
 
 ynh_systemctl --service="$app" --action="start"
 
@@ -112,4 +112,4 @@ ynh_systemctl --service="$app" --action="start"
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Upgrade of $app completed" 
+ynh_script_progression "Upgrade of $app completed" 

@@ -11,7 +11,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 # DECLARE DATA AND CONF FILES TO BACKUP
 #=================================================
-ynh_print_info --message="Declaring files to be backed up..."
+ynh_script_progression "Declaring files to be backed up..."
 
 #=================================================
 # BACKUP THE APP MAIN DIR
@@ -39,4 +39,4 @@ ynh_backup "/etc/logrotate.d/$app"
 # END OF SCRIPT
 #=================================================
 
-ynh_print_info --message="Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
+ynh_script_progression "Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."

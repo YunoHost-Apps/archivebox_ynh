@@ -18,7 +18,7 @@ ynh_systemctl --service="$app" --action="stop"
 #=================================================
 # MODIFY URL IN NGINX CONF
 #=================================================
-ynh_script_progression --message="Updating NGINX web server configuration..." 
+ynh_script_progression "Updating NGINX web server configuration..." 
 
 ynh_config_change_url_nginx
 
