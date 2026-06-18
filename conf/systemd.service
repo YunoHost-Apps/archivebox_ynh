@@ -6,6 +6,7 @@ After=network.target
 Type=simple
 User=__APP__
 Group=__APP__
+Environment="PATH=__PATH_WITH_NODEJS__"
 WorkingDirectory=__DATA_DIR__/
 ExecStart=__INSTALL_DIR__/.venv/bin/archivebox server 127.0.0.1:__PORT__
 StandardOutput=append:/var/log/__APP__/__APP__.log
@@ -41,7 +42,6 @@ CapabilityBoundingSet=~CAP_BLOCK_SUSPEND CAP_WAKE_ALARM
 CapabilityBoundingSet=~CAP_SYS_TTY_CONFIG
 CapabilityBoundingSet=~CAP_MAC_ADMIN CAP_MAC_OVERRIDE
 CapabilityBoundingSet=~CAP_NET_ADMIN CAP_NET_BROADCAST CAP_NET_RAW
-CapabilityBoundingSet=~CAP_SYS_ADMIN CAP_SYS_PTRACE CAP_SYSLOG
 
 [Install]
 WantedBy=multi-user.target
