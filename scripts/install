@@ -44,7 +44,7 @@ chown -R "$app" "$install_dir"
 	ynh_exec_as_app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
 )
 
-archivebox_cmd="$install_dir/.venv/bin/archivebox"
+archivebox_cmd="$install_dir/venv/bin/archivebox"
 
 #=================================================
 # INSTALL NODE DEPENDENCIES
