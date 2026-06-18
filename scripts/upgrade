@@ -40,6 +40,7 @@ chown -R "$app" "$install_dir"
     set -o nounset
     ynh_exec_as $app $install_dir/venv/bin/pip install --upgrade pip
     ynh_exec_as $app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
+	ynh_exec_as_app $install_dir/venv/bin/pip install "$install_dir"
 )
 
 archivebox_cmd="$install_dir/venv/bin/archivebox"
