@@ -81,7 +81,7 @@ pushd $data_dir
 
 	ynh_exec_as_app $archivebox_cmd manage createsuperuser --username "$admin" --email "$admin_mail" --noinput || true
 
-	ynh_exec_as_app $archivebox_cmd manage shell -c \
+	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd manage shell -c \
     "from django.contrib.auth.models import User; u=User.objects.get(username='$admin'); u.set_password('$password'); u.save()"
 	
 	ynh_script_progression "Finishing Archivebox Setup"
