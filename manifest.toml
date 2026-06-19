@@ -7,7 +7,7 @@ name = "ArchiveBox"
 description.en = "Archiving solution to collect, save, and view sites you want to preserve offline"
 description.fr = "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
 
-version = "0.7.3~ynh2"
+version = "0.7.4~ynh1"
 
 maintainers = ["Max Fowler"]
 
@@ -20,6 +20,7 @@ code = "https://github.com/ArchiveBox/ArchiveBox"
 
 [integration]
 yunohost = ">= 12.1.39"
+helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
 
@@ -56,9 +57,27 @@ ram.runtime = "50M"
 
 [resources]
     [resources.sources.main]
-    url = "https://github.com/ArchiveBox/ArchiveBox/archive/refs/tags/v0.7.3.tar.gz"
-    sha256 = "27c344a4e269eaa84195daefa6c28836465886cb9b12f272264253c0a890d256"
+    url = "https://github.com/ArchiveBox/ArchiveBox/archive/refs/tags/v0.7.4.tar.gz"
+    sha256 = "75ed23741f1198d19e77b7adc7a73184683912450b16535a27c9e1695230086b"
     autoupdate.strategy = "latest_github_release"
+
+
+    [resources.sources.uv]
+    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.11.21/uv-x86_64-unknown-linux-gnu.tar.gz"
+    amd64.sha256 = "8c88519b0ef0af9801fcdee419bbb12116bd9e6b18e162ae093c932d8b264050"
+    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.11.21/uv-aarch64-unknown-linux-gnu.tar.gz"
+    arm64.sha256 = "88e800834007cc5efd4675f166eb2a51e7e3ad19876d85fa8805a6fb5c922397"
+    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.11.21/uv-armv7-unknown-linux-gnueabihf.tar.gz"
+    armhf.sha256 = "929440f991ccd8097e01be1ec831f673ac7bbf508e94819b4270f2873f69e658"
+
+    in_subdir = true
+    
+    autoupdate.strategy = "latest_github_release"
+    autoupdate.upstream = "https://github.com/astral-sh/uv"
+    autoupdate.asset.amd64 = "^uv-x86_64-unknown-linux-gnu.tar.gz"
+    autoupdate.asset.arm64 = "^uv-aarch64-unknown-linux-gnu.tar.gz"
+    autoupdate.asset.armhf = "^uv-armv7-unknown-linux-gnueabihf.tar.gz"
+
 
     [resources.system_user]
 
@@ -71,13 +90,46 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.ports]
-
+	
+    
     [resources.apt]
-    packages = "python3-venv, expect, apt-transport-https, ca-certificates, gnupg2, zlib1g-dev, dumb-init, gosu, unzip, curl, fontconfig, fonts-ipafont-gothic, fonts-wqy-zenhei, fonts-thai-tlwg, fonts-symbola, fonts-noto, fonts-freefont-ttf, wget, curl, chromium, ffmpeg, yt-dlp, ripgrep, build-essential, python3-dev"
-    packages_from_raw_bash = """
+packages = [
+    "libldap2-dev",
+    "libsasl2-dev",
+    "libssl-dev",
+    "python3-venv",
+    "apt-transport-https",
+    "ca-certificates",
+    "gnupg2",
+    "zlib1g-dev",
+    "dumb-init",
+    "gosu",
+    "unzip",
+    "curl",
+    "wget",
+    "fontconfig",
+    "fonts-ipafont-gothic",
+    "fonts-wqy-zenhei",
+    "fonts-thai-tlwg",
+    "fonts-symbola",
+    "fonts-noto",
+    "fonts-freefont-ttf",
+    "chromium",
+    "ffmpeg",
+    "yt-dlp",
+    "ripgrep",
+    "build-essential",
+    "python3-dev",
+    ]
+packages_from_raw_bash = """
     if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then
         echo "fonts-kacst";
     elif [[ $YNH_DEBIAN_VERSION == "trixie" ]]; then
         echo "fonts-kacst-one";
     fi
     """
+
+	
+    [resources.nodejs]
+    version = "22"
+    
