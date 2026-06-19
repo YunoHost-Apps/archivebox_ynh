@@ -10,117 +10,106 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# STANDARD UPGRADE STEPS
+# STORE SETTINGS
+#=================================================
+
+python_version=3.11
+
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..." --weight=1
+ynh_script_progression "Stopping a systemd service..." 
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
+ynh_systemctl --service="$app" --action="stop"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Upgrading source files..." --weight=1
+ynh_script_progression "Upgrading source files..."
 
-# Download, check integrity, uncompress and patch the source from app.src
-tempdir="$(mktemp -d)"
-ynh_setup_source --dest_dir="$tempdir"
-mkdir -p $install_dir
-
-chmod -R o-rwx "$install_dir"
-chown -R $app:www-data "$install_dir"
+ynh_setup_source --dest_dir="$install_dir" --full_replace --keep=".venv .uv .python_runtime .uv_cache"
+chown -R "$app:www-data" "$install_dir"
 
 #=================================================
-# UPGRADE DEPENDENCIES
+# UPGRADE UV
 #=================================================
-ynh_script_progression --message="Upgrading dependencies..." --weight=1
+ynh_script_progression "Upgrading uv..."
 
-ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
+ynh_setup_source --dest_dir="$install_dir/.uv" --source_id="uv"
+chmod +x "$install_dir/.uv/uv"
+
+export PATH="$install_dir/.uv:$PATH"
+export UV_PYTHON_INSTALL_DIR="$install_dir/.python_runtime"
+export UV_CACHE_DIR="$install_dir/.uv_cache"
 
 #=================================================
-# SPECIFIC UPGRADE
+# UPGRADE UV PROJECT
 #=================================================
-# UPGRADE VIA PIP
-#=================================================
-ynh_script_progression --message="Upgrading via pip" --weight=1
+ynh_script_progression "Upgrading $app's dependencies..."
 
-ynh_use_nodejs
-python3 -m venv "${install_dir}/venv"
-cp ../conf/requirements.txt "$install_dir/requirements.txt"
-chown -R "$app" "$install_dir"
 
-#run source in a 'sub shell'
-(
-    set +o nounset
-    source "${install_dir}/venv/bin/activate"
-    set -o nounset
-    ynh_exec_as $app $install_dir/venv/bin/pip install --upgrade pip
-    ynh_exec_as $app $install_dir/venv/bin/pip install -r "$install_dir/requirements.txt"
-)
+#ynh_hide_warnings uv sync --no-dev --python "$python_version" --project "$install_dir"
+	#ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
+	ynh_hide_warnings uv pip install --python "$install_dir/.venv/bin/python" "archivebox==$(ynh_app_upstream_version)"
+chown -R "$app:" "$install_dir"
 
-# we use this virtualenv archivebox for further commands now
-archivebox_cmd="$install_dir/venv/bin/archivebox"
+archivebox_cmd="$install_dir/.venv/bin/archivebox"
 
 #=================================================
 # UPGRADE NODE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Upgrading node dependencies..."
-	
-cp -f $tempdir/package.json "$install_dir/package.json"
-cp -f $tempdir/package-lock.json "$install_dir/package-lock.json"
-ynh_secure_remove --file="$tempdir"
-pushd $install_dir
-	ynh_use_nodejs
-	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm ci
+ynh_script_progression "Upgrading node dependencies..."
+
+pushd "$install_dir"
+    ynh_hide_warnings npm ci
 popd
 
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-ynh_script_progression --message="Updating a configuration file..." --weight=1
+#ynh_script_progression "Updating a configuration file..." 
 
-ynh_store_file_checksum --file="$data_dir/ArchiveBox.conf"
-ynh_add_config --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
+#ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
-chmod 600 "$data_dir/ArchiveBox.conf"
-chown $app:$app "$data_dir/ArchiveBox.conf"
+#chmod 600 "$data_dir/ArchiveBox.conf"
+#chown $app:$app "$data_dir/ArchiveBox.conf"
 
 #=================================================
 # FINISH ARCHIVEBOX SETUP
 #=================================================
 
 # rerun archivebox setup (its idempotent, so it should be ok during upgrade)
-ynh_script_progression --message="Finishing Archivebox Setup" --weight=1
-pushd $data_dir
-	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $archivebox_cmd init --setup
+ynh_script_progression "Finishing Archivebox Setup" 
+
+pushd "$data_dir"
+    ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init --setup
 popd
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
+ynh_script_progression "Upgrading system configurations related to $app..."
 
 # Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
 # Create a dedicated systemd config
-ynh_add_systemd_config
+ynh_config_add_systemd
 
 # Use logrotate to manage app-specific logfile(s)
-ynh_use_logrotate --non-append
+ynh_config_add_logrotate
 
 yunohost service add $app --description="Self-hosted internet archiving" --log="/var/log/$app/$app.log"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --weight=1
+ynh_script_progression "Starting a systemd service..." 
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemctl --service="$app" --action="start"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Upgrade of $app completed" --last
+ynh_script_progression "Upgrade of $app completed" 
