@@ -74,9 +74,9 @@ ram.runtime = "50M"
     
     autoupdate.strategy = "latest_github_release"
     autoupdate.upstream = "https://github.com/astral-sh/uv"
-    autoupdate.asset.amd64 = "^uv-x86_64-unknown-linux-gnu.tar.gz"
-    autoupdate.asset.arm64 = "^uv-aarch64-unknown-linux-gnu.tar.gz"
-    autoupdate.asset.armhf = "^uv-armv7-unknown-linux-gnueabihf.tar.gz"
+    autoupdate.asset.amd64 = "^uv-x86_64-unknown-linux-gnu.tar.gz$"
+    autoupdate.asset.arm64 = "^uv-aarch64-unknown-linux-gnu.tar.gz$"
+    autoupdate.asset.armhf = "^uv-armv7-unknown-linux-gnueabihf.tar.gz$"
 
 
     [resources.system_user]
