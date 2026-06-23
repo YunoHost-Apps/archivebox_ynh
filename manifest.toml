@@ -7,7 +7,7 @@ name = "ArchiveBox"
 description.en = "Archiving solution to collect, save, and view sites you want to preserve offline"
 description.fr = "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
 
-version = "0.7.4~ynh2"
+version = "0.7.4~ynh3"
 
 maintainers = ["Max Fowler"]
 
@@ -63,12 +63,12 @@ ram.runtime = "50M"
 
 
     [resources.sources.uv]
-    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.11.23/uv-x86_64-unknown-linux-gnu.tar.gz"
-    amd64.sha256 = "e12c4cda2fe8c305510a78380a88f2c32a27e90cdcd123cefd2873388f0ebb5f"
-    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.11.23/uv-aarch64-unknown-linux-gnu.tar.gz"
-    arm64.sha256 = "1873a77350f6621279ae1a0d2227f2bd8b67131598f14a7eb0ba2215d3da2c98"
-    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.11.23/uv-armv7-unknown-linux-gnueabihf.tar.gz"
-    armhf.sha256 = "d10df2ebaa729a51d15395720c3f5e76497ae6414beb82043bb2e53f9a86314a"
+    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.11.24/uv-x86_64-unknown-linux-gnu.tar.gz"
+    amd64.sha256 = "5ce1ad074a78f96c5c8122088bb85a12eb282195bc1453151a48762e4fc31fed"
+    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.11.24/uv-aarch64-unknown-linux-gnu.tar.gz"
+    arm64.sha256 = "e22c66d36a0098b17cff80a8647e0b8c58202af899d4e9eb820fc7ad126435a1"
+    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.11.24/uv-armv7-unknown-linux-gnueabihf.tar.gz"
+    armhf.sha256 = "b9ec27086af022b2962428beeb5d391903d663f3bd76fed3d8a39def1cc7fe19"
 
     in_subdir = true
     
