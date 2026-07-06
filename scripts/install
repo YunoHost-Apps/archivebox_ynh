@@ -26,7 +26,7 @@ ynh_setup_source --dest_dir="$install_dir"
 ynh_setup_source --dest_dir="$install_dir/.uv" --source_id="uv"
 
 chmod +x "$install_dir/.uv/uv"
-chown -R "$app:www-data" "$install_dir"
+chown -R "$app:$app" "$install_dir"
 
 
 ynh_script_progression "Preparing UV..."
@@ -47,7 +47,7 @@ ynh_script_progression "Installing $app's dependencies..."
 #    ynh_hide_warnings uv sync --no-dev --python $python_version --project "$install_dir" 
 	ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
 	ynh_hide_warnings uv pip install --python "$install_dir/.venv/bin/python" "archivebox==$(ynh_app_upstream_version)"
-    chown -R "$app:" "$install_dir"
+    chown -R "$app:$app" "$install_dir"
 
 # we use this virtualenv archivebox for further commands now
 archivebox_cmd="$install_dir/.venv/bin/archivebox"
