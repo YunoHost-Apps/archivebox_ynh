@@ -63,12 +63,12 @@ ram.runtime = "50M"
 
 
     [resources.sources.uv]
-    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.11.29/uv-x86_64-unknown-linux-gnu.tar.gz"
-    amd64.sha256 = "04f8b82f5d47f0512dcd32c67a4a6f16a0ea27c81537c338fd0ad6b23cebe829"
-    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.11.29/uv-aarch64-unknown-linux-gnu.tar.gz"
-    arm64.sha256 = "94500fb064ae3c971a873cba64d94694c50677e0a4dbf78735c80509e7429919"
-    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.11.29/uv-armv7-unknown-linux-gnueabihf.tar.gz"
-    armhf.sha256 = "7b5717ae304fbb1e94104699fb8c08b32d1537fedc90dd8fcf87768d818951ed"
+    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.11.31/uv-x86_64-unknown-linux-gnu.tar.gz"
+    amd64.sha256 = "8cc1cd82d434ec565376f98bd938d4b715b5791a80ff2d3aa78821cf85091b4b"
+    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.11.31/uv-aarch64-unknown-linux-gnu.tar.gz"
+    arm64.sha256 = "d74f23949fd07be4970f293d06ca99d87cd2a78a341c3d7b7fc0df7bc2d8a145"
+    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.11.31/uv-armv7-unknown-linux-gnueabihf.tar.gz"
+    armhf.sha256 = "de23124095c4df154d3807495b59f1985d8d9460bd70d3de61fef2034756bd61"
 
     in_subdir = true
     
