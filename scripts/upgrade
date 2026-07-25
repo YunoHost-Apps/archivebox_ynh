@@ -71,12 +71,12 @@ popd
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-#ynh_script_progression "Updating a configuration file..." 
+ynh_script_progression "Updating a configuration file..." 
 
-#ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
+ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
-#chmod 600 "$data_dir/ArchiveBox.conf"
-#chown $app:$app "$data_dir/ArchiveBox.conf"
+chmod 600 "$data_dir/ArchiveBox.conf"
+chown $app:$app "$data_dir/ArchiveBox.conf"
 
 #=================================================
 # FINISH ARCHIVEBOX SETUP
