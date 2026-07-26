@@ -91,6 +91,7 @@ popd
 #=================================================
 ynh_script_progression "Updating a configuration file..." 
 
+ynh_store_file_checksum --file="$data_dir/ArchiveBox.conf"
 ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
 chmod 600 "$data_dir/ArchiveBox.conf"
