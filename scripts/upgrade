@@ -27,7 +27,13 @@ ynh_systemctl --service="$app" --action="stop"
 #=================================================
 ynh_script_progression "Upgrading source files..."
 
-ynh_setup_source --dest_dir="$install_dir" --full_replace --keep=".venv .uv .python_runtime .uv_cache"
+if ynh_app_upgrading_from_version_before 0.7.4~ynh1
+then
+    ynh_setup_source --dest_dir="$install_dir" --full_replace=1
+else
+    ynh_setup_source --dest_dir="$install_dir" --full_replace --keep=".venv .uv .python_runtime .uv_cache"
+fi
+
 chown -R "$app:www-data" "$install_dir"
 
 #=================================================
@@ -38,9 +44,21 @@ ynh_script_progression "Upgrading uv..."
 ynh_setup_source --dest_dir="$install_dir/.uv" --source_id="uv"
 chmod +x "$install_dir/.uv/uv"
 
-export PATH="$install_dir/.uv:$PATH"
-export UV_PYTHON_INSTALL_DIR="$install_dir/.python_runtime"
-export UV_CACHE_DIR="$install_dir/.uv_cache"
+if ynh_app_upgrading_from_version_before 0.7.4~ynh1
+then
+    export PATH="$install_dir/.uv:$PATH"
+    export UV_PYTHON_INSTALL_DIR="$install_dir/.python_runtime"
+    export UV_CACHE_DIR="$install_dir/.uv_cache"
+    echo "PATH=$install_dir/.uv:\$PATH" >> $install_dir/.bashrc 
+    echo "UV_PYTHON_INSTALL_DIR=$install_dir/.python_runtime" >> $install_dir/.bashrc 
+    echo "UV_CACHE_DIR=$install_dir/.uv_cache" >> $install_dir/.bashrc
+    echo 'export PATH=$path_with_nodejs' >> $install_dir/.bashrc
+
+else
+    export PATH="$install_dir/.uv:$PATH"
+    export UV_PYTHON_INSTALL_DIR="$install_dir/.python_runtime"
+    export UV_CACHE_DIR="$install_dir/.uv_cache"
+fi
 
 #=================================================
 # UPGRADE UV PROJECT
@@ -71,9 +89,11 @@ popd
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-#ynh_script_progression "Updating a configuration file..." 
+ynh_script_progression "Updating a configuration file..." 
 
-#ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
+ynh_store_file_checksum "$data_dir/ArchiveBox.conf"
+
+ynh_config_add --template="ArchiveBox.conf" --destination="$data_dir/ArchiveBox.conf"
 
 chmod 600 "$data_dir/ArchiveBox.conf"
 chown $app:$app "$data_dir/ArchiveBox.conf"
