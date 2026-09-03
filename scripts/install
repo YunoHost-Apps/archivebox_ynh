@@ -4,7 +4,6 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -13,7 +12,6 @@ source /usr/share/yunohost/helpers
 
 admin_mail=$(ynh_user_get_info --username="$admin" --key="mail")
 python_version=3.11
-
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -27,7 +25,6 @@ ynh_setup_source --dest_dir="$install_dir/.uv" --source_id="uv"
 
 chmod +x "$install_dir/.uv/uv"
 chown -R "$app:www-data" "$install_dir"
-
 
 ynh_script_progression "Preparing UV..."
     export PATH="$install_dir/.uv:$PATH"
@@ -44,7 +41,7 @@ ynh_script_progression "Preparing UV..."
 
 ynh_script_progression "Installing $app's dependencies..."
 
-#    ynh_hide_warnings uv sync --no-dev --python $python_version --project "$install_dir" 
+#   ynh_hide_warnings uv sync --no-dev --python $python_version --project "$install_dir" 
 	ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
 	ynh_hide_warnings uv pip install --python "$install_dir/.venv/bin/python" "archivebox==$(ynh_app_upstream_version)"
     chown -R "$app:" "$install_dir"
@@ -92,6 +89,7 @@ popd
 # SYSTEM CONFIGURATION
 #=================================================
 ynh_script_progression "Adding system configurations related to $app..." 
+
 # Create a dedicated NGINX config
 ynh_config_add_nginx
 

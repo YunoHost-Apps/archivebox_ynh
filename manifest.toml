@@ -7,7 +7,7 @@ name = "ArchiveBox"
 description.en = "Archiving solution to collect, save, and view sites you want to preserve offline"
 description.fr = "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
 
-version = "0.7.4~ynh11"
+version = "0.7.4~ynh12"
 
 maintainers = ["Max Fowler"]
 
@@ -19,7 +19,7 @@ admindoc = "https://github.com/ArchiveBox/ArchiveBox/wiki"
 code = "https://github.com/ArchiveBox/ArchiveBox"
 
 [integration]
-yunohost = ">= 12.1.39"
+yunohost = ">= 12.1.40"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
@@ -63,12 +63,12 @@ ram.runtime = "50M"
 
 
     [resources.sources.uv]
-    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.12.7/uv-x86_64-unknown-linux-gnu.tar.gz"
-    amd64.sha256 = "788f18abea7c5f55d6216e4f5613fd89d4d59b631efeec117b2b07fe72f1da21"
-    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.12.7/uv-aarch64-unknown-linux-gnu.tar.gz"
-    arm64.sha256 = "66393193038dd7eb108abd7a218d9cec04ac70ab98242b0720fa94de19223b7c"
-    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.12.7/uv-armv7-unknown-linux-gnueabihf.tar.gz"
-    armhf.sha256 = "e5b9a25ff397f593e9fff236c4d72ada28aff7da4540868dbca74f391a86d546"
+    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.12.9/uv-x86_64-unknown-linux-gnu.tar.gz"
+    amd64.sha256 = "ec7a99cd05e0cd7f80243f135ce1361c76835cb0ee60055d14d20eba8eba1460"
+    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.12.9/uv-aarch64-unknown-linux-gnu.tar.gz"
+    arm64.sha256 = "c36fe17937ff6bd16dc42fc13854b5465999fcab2efe0af559381e945e3c6001"
+    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.12.9/uv-armv7-unknown-linux-gnueabihf.tar.gz"
+    armhf.sha256 = "ac24ad959c4dee04c6cf42597a947828f661fda184db5fe82b3e72a07d391316"
 
     in_subdir = true
     
@@ -91,44 +91,42 @@ ram.runtime = "50M"
 
     [resources.ports]
 	
-    
     [resources.apt]
-packages = [
-    "libldap2-dev",
-    "libsasl2-dev",
-    "libssl-dev",
-    "python3-venv",
-    "apt-transport-https",
-    "ca-certificates",
-    "gnupg2",
-    "zlib1g-dev",
-    "dumb-init",
-    "gosu",
-    "unzip",
-    "curl",
-    "wget",
-    "fontconfig",
-    "fonts-ipafont-gothic",
-    "fonts-wqy-zenhei",
-    "fonts-thai-tlwg",
-    "fonts-symbola",
-    "fonts-noto",
-    "fonts-freefont-ttf",
-    "chromium",
-    "ffmpeg",
-    "yt-dlp",
-    "ripgrep",
-    "build-essential",
-    "python3-dev",
-    ]
-packages_from_raw_bash = """
-    if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then
-        echo "fonts-kacst";
-    elif [[ $YNH_DEBIAN_VERSION == "trixie" ]]; then
-        echo "fonts-kacst-one";
-    fi
-    """
-
+    packages = [
+        "libldap2-dev",
+        "libsasl2-dev",
+        "libssl-dev",
+        "python3-venv",
+        "apt-transport-https",
+        "ca-certificates",
+        "gnupg2",
+        "zlib1g-dev",
+        "dumb-init",
+        "gosu",
+        "unzip",
+        "curl",
+        "wget",
+        "fontconfig",
+        "fonts-ipafont-gothic",
+        "fonts-wqy-zenhei",
+        "fonts-thai-tlwg",
+        "fonts-symbola",
+        "fonts-noto",
+        "fonts-freefont-ttf",
+        "chromium",
+        "ffmpeg",
+        "yt-dlp",
+        "ripgrep",
+        "build-essential",
+        "python3-dev",
+        ]
+    packages_from_raw_bash = """
+        if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then
+            echo "fonts-kacst";
+        elif [[ $YNH_DEBIAN_VERSION == "trixie" ]]; then
+            echo "fonts-kacst-one";
+        fi
+        """
 	
     [resources.nodejs]
     version = "22"
