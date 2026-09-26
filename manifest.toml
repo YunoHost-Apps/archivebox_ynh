@@ -7,7 +7,7 @@ name = "ArchiveBox"
 description.en = "Archiving solution to collect, save, and view sites you want to preserve offline"
 description.fr = "Solution d'archivage pour collecter, enregistrer et afficher les sites que vous souhaitez conserver hors ligne"
 
-version = "0.7.4~ynh15"
+version = "0.9.64~ynh1"
 
 maintainers = ["Max Fowler"]
 
@@ -57,18 +57,18 @@ ram.runtime = "50M"
 
 [resources]
     [resources.sources.main]
-    url = "https://github.com/ArchiveBox/ArchiveBox/archive/refs/tags/v0.7.4.tar.gz"
-    sha256 = "75ed23741f1198d19e77b7adc7a73184683912450b16535a27c9e1695230086b"
+    url = "https://github.com/ArchiveBox/ArchiveBox/archive/refs/tags/v0.9.64.tar.gz"
+    sha256 = "d5928d6ab401d815a772c8e16199b5dd8916e072759ebd4d5814e3a0a4ea6e11"
     autoupdate.strategy = "latest_github_release"
 
 
     [resources.sources.uv]
-    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.12.17/uv-x86_64-unknown-linux-gnu.tar.gz"
-    amd64.sha256 = "fa82fd8dde8e8eefdecada6aa0889666556cfceb690d06e0c3bca49eb3070a63"
-    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.12.17/uv-aarch64-unknown-linux-gnu.tar.gz"
-    arm64.sha256 = "d636d1b678e9e7f367ecb22b46bd1cabbed234d6bc3b4d96365d2b507f72f86c"
-    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.12.17/uv-armv7-unknown-linux-gnueabihf.tar.gz"
-    armhf.sha256 = "796e101976e18a0f92d90b6f3efd289f77fbc5afd1aaa6fdedd3c84c209eabab"
+    amd64.url = "https://github.com/astral-sh/uv/releases/download/0.12.19/uv-x86_64-unknown-linux-gnu.tar.gz"
+    amd64.sha256 = "23bf5552d220e0842b65c862097b2ebaeba0064b74eda5e565e77fd25969d8c8"
+    arm64.url = "https://github.com/astral-sh/uv/releases/download/0.12.19/uv-aarch64-unknown-linux-gnu.tar.gz"
+    arm64.sha256 = "0804e9b164c64b6914182d5920c08551958a095986f10a3731056df701126436"
+    armhf.url = "https://github.com/astral-sh/uv/releases/download/0.12.19/uv-armv7-unknown-linux-gnueabihf.tar.gz"
+    armhf.sha256 = "f47fe74244c4adcff20637c1aee2550dbc31c81ccf0b2a9537bf98b24bc4028a"
 
     in_subdir = true
     
