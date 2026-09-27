@@ -10,7 +10,7 @@ source /usr/share/yunohost/helpers
 # STORE SETTINGS
 #=================================================
 
-python_version=3.11
+python_version=3.13
 
 #=================================================
 # STOP SYSTEMD SERVICE
