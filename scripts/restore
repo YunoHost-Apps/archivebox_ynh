@@ -16,14 +16,14 @@ ynh_restore "$install_dir"
 #=================================================
 # RESTORE THE DATA DIRECTORY
 #=================================================
-ynh_script_progression "Restoring the data directory..." 
+ynh_script_progression "Restoring the data directory..."
 
 ynh_restore "$data_dir"
 
 #=================================================
 # RESTORE SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression "Restoring system configurations related to $app..." 
+ynh_script_progression "Restoring system configurations related to $app..."
 
 ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
 
@@ -43,7 +43,7 @@ chown -R $app:$app "/var/log/$app"
 #=================================================
 # RELOAD NGINX AND PHP-FPM OR THE APP SERVICE
 #=================================================
-ynh_script_progression "Reloading NGINX web server and $app's service..." 
+ynh_script_progression "Reloading NGINX web server and $app's service..."
 
 ynh_systemctl --service="$app" --action="start"
 
@@ -53,4 +53,4 @@ ynh_systemctl --service=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression "Restoration completed for $app" 
+ynh_script_progression "Restoration completed for $app"

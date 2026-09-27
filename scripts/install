@@ -16,7 +16,7 @@ python_version=3.13
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression "Setting up source files..." 
+ynh_script_progression "Setting up source files..."
 
 # Download, check integrity, uncompress and patch the source from app.src
 
@@ -30,8 +30,8 @@ ynh_script_progression "Preparing UV..."
     export PATH="$install_dir/.uv:$PATH"
     export UV_PYTHON_INSTALL_DIR="$install_dir/.python_runtime"
     export UV_CACHE_DIR="$install_dir/.uv_cache"
-    echo "PATH=$install_dir/.uv:\$PATH" >> $install_dir/.bashrc 
-    echo "UV_PYTHON_INSTALL_DIR=$install_dir/.python_runtime" >> $install_dir/.bashrc 
+    echo "PATH=$install_dir/.uv:\$PATH" >> $install_dir/.bashrc
+    echo "UV_PYTHON_INSTALL_DIR=$install_dir/.python_runtime" >> $install_dir/.bashrc
     echo "UV_CACHE_DIR=$install_dir/.uv_cache" >> $install_dir/.bashrc
     echo 'export PATH=$path_with_nodejs' >> $install_dir/.bashrc
 
@@ -41,9 +41,9 @@ ynh_script_progression "Preparing UV..."
 
 ynh_script_progression "Installing $app's dependencies..."
 
-#   ynh_hide_warnings uv sync --no-dev --python $python_version --project "$install_dir" 
-	ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
-	ynh_hide_warnings uv pip install --python "$install_dir/.venv/bin/python" "archivebox==$(ynh_app_upstream_version)"
+#   ynh_hide_warnings uv sync --no-dev --python $python_version --project "$install_dir"
+    ynh_hide_warnings uv venv --python "$python_version" "$install_dir/.venv"
+    ynh_hide_warnings uv pip install --python "$install_dir/.venv/bin/python" "archivebox==$(ynh_app_upstream_version)"
     chown -R "$app:" "$install_dir"
 
 # we use this virtualenv archivebox for further commands now
@@ -55,7 +55,7 @@ archivebox_cmd="$install_dir/.venv/bin/archivebox"
 ynh_script_progression "Installing node dependencies..."
 
 pushd $install_dir
-	ynh_hide_warnings npm ci
+    ynh_hide_warnings npm ci
 popd
 
 #=================================================
@@ -71,24 +71,24 @@ chown $app:$app "$data_dir/ArchiveBox.conf"
 #=================================================
 # INITIALIZE ARCHIVEBOX
 #=================================================
-ynh_script_progression "Initializing $app" 
+ynh_script_progression "Initializing $app"
 
 pushd $data_dir
-	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init
+    ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init
 
-	ynh_exec_as_app $archivebox_cmd manage createsuperuser --username "$admin" --email "$admin_mail" --noinput || true
+    ynh_exec_as_app $archivebox_cmd manage createsuperuser --username "$admin" --email "$admin_mail" --noinput || true
 
-	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd manage shell -c \
+    ynh_hide_warnings ynh_exec_as_app $archivebox_cmd manage shell -c \
     "from django.contrib.auth.models import User; u=User.objects.get(username='$admin'); u.set_password('$password'); u.save()"
-	
-	ynh_script_progression "Finishing Archivebox Setup"
-	ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init --setup
+
+    ynh_script_progression "Finishing Archivebox Setup"
+    ynh_hide_warnings ynh_exec_as_app $archivebox_cmd init --setup
 popd
 
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
-ynh_script_progression "Adding system configurations related to $app..." 
+ynh_script_progression "Adding system configurations related to $app..."
 
 # Create a dedicated NGINX config
 ynh_config_add_nginx
@@ -104,7 +104,7 @@ yunohost service add $app --description="Self-hosted internet archiving" --log="
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression "Starting a systemd service..." 
+ynh_script_progression "Starting a systemd service..."
 
 # Start a systemd service
 ynh_systemctl --service="$app" --action="start"
