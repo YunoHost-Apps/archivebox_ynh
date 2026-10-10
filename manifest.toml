@@ -122,6 +122,7 @@ ram.runtime = "50M"
 		"tesseract-ocr" , 
 		"tesseract-ocr-eng",
 		"imagemagick",
+		"poppler-utils", 
         ]
     packages_from_raw_bash = """
         if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then
