@@ -56,6 +56,7 @@ ynh_script_progression "Installing node dependencies..."
 
 pushd $install_dir
     chown $app:$app -R $install_dir
+    ynh_exec_as_app npm install
 	ynh_exec_as_app npm ci
 popd
 
