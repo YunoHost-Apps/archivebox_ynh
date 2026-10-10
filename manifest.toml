@@ -120,7 +120,8 @@ ram.runtime = "50M"
         "build-essential",
         "python3-dev",
 		"tesseract-ocr" , 
-		"tesseract-ocr-eng", 
+		"tesseract-ocr-eng",
+		"imagemagick",
         ]
     packages_from_raw_bash = """
         if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then
