@@ -119,6 +119,8 @@ ram.runtime = "50M"
         "ripgrep",
         "build-essential",
         "python3-dev",
+		"tesseract-or" , 
+		"tesseract-ocr-eng", 
         ]
     packages_from_raw_bash = """
         if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then
