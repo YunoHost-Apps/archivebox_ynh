@@ -119,7 +119,7 @@ ram.runtime = "50M"
         "ripgrep",
         "build-essential",
         "python3-dev",
-		"tesseract-or" , 
+		"tesseract-ocr" , 
 		"tesseract-ocr-eng", 
         ]
     packages_from_raw_bash = """
