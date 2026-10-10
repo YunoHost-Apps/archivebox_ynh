@@ -55,7 +55,8 @@ archivebox_cmd="$install_dir/.venv/bin/archivebox"
 ynh_script_progression "Installing node dependencies..."
 
 pushd $install_dir
-	ynh_hide_warnings npm ci
+    chown $app:$app -R $install_dir
+	ynh_exec_as_app npm ci
 popd
 
 #=================================================
