@@ -11,6 +11,7 @@ WorkingDirectory=__DATA_DIR__/
 ExecStart=__INSTALL_DIR__/.venv/bin/archivebox server 127.0.0.1:__PORT__
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
+Environment=SEARCH_BACKEND_ENGINE=ripgrep
 
 # Sandboxing options to harden security
 # Details for these options: https://www.freedesktop.org/software/systemd/man/systemd.exec.html

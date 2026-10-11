@@ -11,7 +11,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 
 admin_mail=$(ynh_user_get_info --username="$admin" --key="mail")
-python_version=3.11
+python_version=3.14
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -55,7 +55,9 @@ archivebox_cmd="$install_dir/.venv/bin/archivebox"
 ynh_script_progression "Installing node dependencies..."
 
 pushd $install_dir
-	ynh_hide_warnings npm ci
+    chown $app:$app -R $install_dir
+#    ynh_exec_as_app npm install
+#	ynh_exec_as_app npm ci
 popd
 
 #=================================================
