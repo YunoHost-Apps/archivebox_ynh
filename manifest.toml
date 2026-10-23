@@ -37,6 +37,7 @@ ram.runtime = "50M"
 
     [install.init_main_permission]
     help.en = "If true, saved archives will be viewable without logging in."
+    help.fr = "Si activé, les archives enregistrées seront consultables sans se connecter."
     type = "group"
     default = "visitors"
 
